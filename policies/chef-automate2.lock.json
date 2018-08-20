@@ -1,0 +1,60 @@
+{
+  "revision_id": "01f29a546ce233da125c9be3b3933a34b4d371655cc3de9d3dabcf226087c35e",
+  "name": "chef-automate2",
+  "run_list": [
+    "recipe[managed-automate2::default]"
+  ],
+  "named_run_lists": {
+    "aib": [
+      "recipe[managed-automate2::airgap_bundle]"
+    ],
+    "full": [
+      "recipe[managed-automate2::airgap_bundle]",
+      "recipe[managed-automate2::default]"
+    ]
+  },
+  "included_policy_locks": [
+
+  ],
+  "cookbook_locks": {
+    "managed-automate2": {
+      "version": "0.1.0",
+      "identifier": "13dba1e3b9a7cc37fc1bb658d9795edebf833114",
+      "dotted_decimal_identifier": "5589512914315212.15758319672678777.104310788796692",
+      "source": "..",
+      "cache_key": null,
+      "scm_info": {
+        "scm": "git",
+        "remote": null,
+        "revision": null,
+        "working_tree_clean": true,
+        "published": false,
+        "synchronized_remote_branches": [
+
+        ]
+      },
+      "source_options": {
+        "path": ".."
+      }
+    }
+  },
+  "default_attributes": {
+
+  },
+  "override_attributes": {
+
+  },
+  "solution_dependencies": {
+    "Policyfile": [
+      [
+        "managed-automate2",
+        ">= 0.0.0"
+      ]
+    ],
+    "dependencies": {
+      "managed-automate2 (0.1.0)": [
+
+      ]
+    }
+  }
+}
