@@ -24,3 +24,10 @@ default['ma2']['aib']['file'] = 'chef-automate-airgap.aib'
 
 # set location of the chef-automate CLI
 default['ma2']['cli_path'] = Chef::Config[:file_cache_path]
+
+# sysctl settings to apply to make the preflight-check pass
+default['ma2']['sysctl']['fs.file-max'] = 64000
+default['ma2']['sysctl']['vm.max_map_count'] = 262144
+default['ma2']['sysctl']['vm.dirty_ratio'] = 15
+default['ma2']['sysctl']['vm.dirty_background_ratio'] = 35
+default['ma2']['sysctl']['vm.dirty_expire_centisecs'] = 20000

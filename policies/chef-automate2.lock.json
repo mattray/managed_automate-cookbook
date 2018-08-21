@@ -1,5 +1,5 @@
 {
-  "revision_id": "01f29a546ce233da125c9be3b3933a34b4d371655cc3de9d3dabcf226087c35e",
+  "revision_id": "71ddf4d632b404725d364acceffb7f20b994b0d3e9b5756175be4b465fa57eee",
   "name": "chef-automate2",
   "run_list": [
     "recipe[managed-automate2::default]"
@@ -18,16 +18,16 @@
   ],
   "cookbook_locks": {
     "managed-automate2": {
-      "version": "0.1.0",
-      "identifier": "13dba1e3b9a7cc37fc1bb658d9795edebf833114",
-      "dotted_decimal_identifier": "5589512914315212.15758319672678777.104310788796692",
+      "version": "0.2.0",
+      "identifier": "bdf0541479698072d61d38c610256bdf42501da1",
+      "dotted_decimal_identifier": "53463014509734272.32323568339914789.118606634425761",
       "source": "..",
       "cache_key": null,
       "scm_info": {
         "scm": "git",
-        "remote": null,
-        "revision": null,
-        "working_tree_clean": true,
+        "remote": "git@github.com:mattray/managed-automate2-cookbook.git",
+        "revision": "8660c2be6bbd32db25416f10d3572b52311f4883",
+        "working_tree_clean": false,
         "published": false,
         "synchronized_remote_branches": [
 
@@ -52,7 +52,7 @@
       ]
     ],
     "dependencies": {
-      "managed-automate2 (0.1.0)": [
+      "managed-automate2 (0.2.0)": [
 
       ]
     }

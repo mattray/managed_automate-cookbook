@@ -13,8 +13,7 @@ aibdir = node['ma2']['aib']['dir']
 aibfile = aibdir + '/' + node['ma2']['aib']['file']
 aibchef = aibdir + '/chef-automate'
 
-remote_file 'chef-automate_linux_amd64.zip' do
-  path "#{fcp}/chef-automate_linux_amd64.zip"
+remote_file "#{fcp}/chef-automate_linux_amd64.zip" do
   source 'https://packages.chef.io/files/current/latest/chef-automate-cli/chef-automate_linux_amd64.zip'
   not_if { ::File.exist?(aibfile) && ::File.exist?(aibchef) }
 end
@@ -36,8 +35,7 @@ execute "cp #{fcpchef} #{aibdir}" do
 end
 
 # successful execution of this command produces an Airgap Installation Bundle
-execute 'chef-automate airgap bundle create' do
-  command "#{fcpchef} airgap bundle create #{fcpfile}"
+execute "#{fcpchef} airgap bundle create #{fcpfile}" do
   cwd fcp
   not_if { ::File.exist?(fcpfile) }
   not_if { ::File.exist?(aibfile) }

@@ -4,7 +4,7 @@ driver:
   synced_folders:
       - ['test', '/tmp/test', 'create: true', owner: "root", group: "root"]
   customize:
-    memory: 2048
+    memory: 2304 # Automate needs > 2GB
     cpus: 2
 
 provisioner:
@@ -21,6 +21,14 @@ platforms:
   - name: centos-7
 
 suites:
+  - name: default # assumes you have an .aib and chef-automate in /tmp/test
+    attributes:
+      ma2:
+        aib:
+          dir: /tmp/test
+    verifier:
+      inspec_tests:
+        - test/integration/default
   - name: aib
     provisioner:
       named_run_list: aib
@@ -36,14 +44,6 @@ suites:
         fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
         aibchef: /tmp/test/chef-automate
         aibfile: /tmp/test/chef-automate-airgap.aib
-  - name: airgappedinstall
-    attributes:
-      ma2:
-        aib:
-          dir: /tmp/test
-    verifier:
-      inspec_tests:
-        - test/integration/default
   - name: full
     provisioner:
       named_run_list: full
