@@ -17,8 +17,10 @@
 # limitations under the License.
 #
 
-# set location of the airgap installation bundle
-default['ma2']['aib'] = "#{Chef::Config[:file_cache_path]}/chef-automate-airgap.aib"
+# airgap_bundle
+# set location to copy the airgap installation bundle and chef-automate command
+default['ma2']['aib']['dir'] = Chef::Config[:file_cache_path]
+default['ma2']['aib']['file'] = 'chef-automate-airgap.aib'
 
 # set location of the chef-automate CLI
 default['ma2']['cli_path'] = Chef::Config[:file_cache_path]

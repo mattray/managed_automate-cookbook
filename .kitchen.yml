@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   synced_folders:
-      - ['test', '/tmp/tests', 'create: true', owner: "root", group: "root"]
+      - ['test', '/tmp/test', 'create: true', owner: "root", group: "root"]
   customize:
     memory: 2048
     cpus: 2
@@ -21,13 +21,26 @@ platforms:
   - name: centos-7
 
 suites:
-  - name: default
-    verifier:
-      inspec_tests:
-        - test/integration/default
   - name: aib
     provisioner:
       named_run_list: aib
+    attributes:
+      ma2:
+        aib:
+          dir: /tmp/test
+    verifier:
+      inspec_tests:
+        - test/integration/aib
+      attributes:
+        fcpchef: /tmp/kitchen/cache/chef-automate
+        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
+        aibchef: /tmp/test/chef-automate
+        aibfile: /tmp/test/chef-automate-airgap.aib
+  - name: airgappedinstall
+    attributes:
+      ma2:
+        aib:
+          dir: /tmp/test
     verifier:
       inspec_tests:
         - test/integration/default
