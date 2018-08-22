@@ -6,6 +6,8 @@ driver:
   customize:
     memory: 2304 # Automate needs > 2GB
     cpus: 2
+  network:
+    - ["private_network", {ip: "192.168.33.33"}]
 
 provisioner:
   name: chef_zero
@@ -21,7 +23,7 @@ platforms:
   - name: centos-7
 
 suites:
-  - name: default # assumes you have an .aib and chef-automate in /tmp/test
+  - name: default
     attributes:
       ma2:
         aib:

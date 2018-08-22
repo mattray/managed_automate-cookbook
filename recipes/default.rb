@@ -4,6 +4,9 @@
 #
 
 fcp = Chef::Config[:file_cache_path]
+aibdir = node['ma2']['aib']['dir']
+aibfile = aibdir + '/' + node['ma2']['aib']['file']
+aibchef = aibdir + '/chef-automate'
 
 # prepare for preflight-check
 
@@ -56,27 +59,30 @@ sysctl 'vm.dirty_expire_centisecs' do
 end
 
 # Verify the installation is ready to run Automate 2
-execute "#{node['ma2']['aib']['dir']}/chef-automate preflight-check --airgap" do
-  not_if { ::File.exist?("#{fcp}/preflight-check") }
-end
-
-# disable repeated preflight-checks
-file "#{fcp}/preflight-check" do
-  action :nothing
-  subscribes :create, "execute[#{node['ma2']['aib']['dir']}/chef-automate preflight-check --airgap]"
+execute "#{aibchef} preflight-check --airgap" do
+  not_if { ::File.exist?("#{fcp}/config.toml") }
 end
 
 # create default configuration
-execute "#{node['ma2']['aib']['dir']}/chef-automate init-config --upgrade-strategy none" do
+execute "#{aibchef} init-config --upgrade-strategy none" do
   cwd fcp
   not_if { ::File.exist?("#{fcp}/config.toml") }
 end
 
-# Install all the things!
-# ./chef-automate deploy config.toml
-# sudo ./chef-automate deploy config.toml --accept-terms-and-mlsa --skip-preflight > ${GUEST_WKDIR}/logs/automate.deploy.log 2>&1
+# deploy chef automate
+execute "chef-automate deploy" do
+  command "#{aibchef} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{aibfile}"
+  cwd fcp
+  not_if { ::File.exist?("#{fcp}/automate-credentials.toml") }
+end
 
-# if [ -f ${GUEST_WKDIR}/automate.license ]; then
-#   sudo ./chef-automate license apply $(< ${GUEST_WKDIR}/automate.license) && sudo ./chef-automate license status
-# fi
-# sudo ./chef-automate admin-token > ${GUEST_WKDIR}/a2-token
+execute "chef-automate license apply" do
+  command "#{aibchef} license apply #{node['ma2']['license']}"
+  sensitive true
+  not_if { node['ma2']['license'].nil? }
+  not_if "#{aibchef} license status | grep '^License ID'"
+end
+
+# should we push the contents of automate-credentials.toml into an attribute or
+# log if we don't want logins on the box?
+# should we push the admin-token for later? ruby-block to an attribute?
