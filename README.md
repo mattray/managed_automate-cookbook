@@ -16,24 +16,23 @@ This recipe requires internet access and is used to create an airgap installatio
 
 Runs `chef-automate backup` periodically. Scheduling and backup file management TBD.
 
-# Testing with Vagrant
+# Testing with Test Kitchen
 
 The included `.kitchen.yml` provides testing scenarios for the following:
 
   * `default`: tests installing from a previously downloaded `chef-automate` and `chef-automate-airgap.aib` (use the `aib` suite to create this if necessary) to the shared `test` directory.
- # assumes you have an .aib and chef-automate in /tmp/test
   * `aib`: tests creating an airgap bundle for installing Automate offline. It writes `chef-automate` and `chef-automate-airgap.aib` to the shared `test` directory.
   * `full`: performs both the airgap bundle creation and installation.
 
-## test kitchen ##
+## .kitchen.yml ##
 
-The `.kitchen.yml` sets the VM to have the private IP 192.168.33.33. If you want to use the Automate web UI, you will need to get the self-signed certificate created with the installation
+The `.kitchen.yml` sets the VM to have the private IP `192.168.33.33`. If you want to use the Automate web UI, you will need to get the self-signed certificate created with the installation
 
-  1 Use `knife ssl fetch https://192.168.33.33` to pull the `default-centos-7.vagrantup.com.crt`.
-  1 Install the certificate on your workstation. Under MacOS I used the Keychain Access application and did **File->Import Items** and selected the certificate. I then set the permissions to allow everything and deleted it when I destroyed the Vagrant machine.
-  1 Connect to https://192.168.33.33 which will redirect to 'default-centos-7.vagrantup.com' or one of the other suites. This works with Chrome, not Firefox.
+  1. Use `knife ssl fetch https://192.168.33.33` to pull the `default-centos-7.vagrantup.com.crt`.
+  2. Install the certificate on your workstation. Under MacOS I used the Keychain Access application and did **File->Import Items** and selected the certificate. I then set the permissions to allow everything and deleted it when I destroyed the Vagrant machine.
+  3. Connect to https://192.168.33.33 which will redirect to `default-centos-7.vagrantup.com` or one of the other suites. This works with Chrome, not Firefox.
 
-To use a license key, store it in your .kitchen.local.yml similar to this:
+To use a license key, store it in your `.kitchen.local.yml` similar to this:
 
 ```
 suites:
