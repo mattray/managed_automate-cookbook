@@ -27,6 +27,7 @@ end
 
 file fcpchef do
   mode '0755'
+  only_if { ::File.exist?(fcpchef) }
 end
 
 # copy chef-automate into the destination directory
