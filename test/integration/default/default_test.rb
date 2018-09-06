@@ -30,13 +30,14 @@ describe kernel_parameter( 'vm.dirty_expire_centisecs') do
   its('value') { should be <= 30000 }
 end
 
-describe file "/tmp/kitchen/cache/preflight-check" do
-  it { should exist }
-  it { should be_file }
-end
-
 describe file "/tmp/kitchen/cache/config.toml" do
   it { should exist }
   it { should be_file }
   its('content') { should match(/upgrade_strategy = "none"/) }
+end
+
+describe file "/tmp/kitchen/cache/automate-credentials.toml" do
+  it { should exist }
+  it { should be_file }
+  its('content') { should match(/username = "admin"/) }
 end
