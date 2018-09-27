@@ -27,25 +27,23 @@ directory backupdir
 file backupcommand do
   mode '0700'
   content "#!/bin/sh
+
 # work from a2's backup directory
 cd #{a2backupdir}
+
 # take backup
 /usr/bin/chef-automate backup create --result-json backup-result.json
+
 # backup_id is the timestamp as stored in the JSON log
 backup_id=`cat backup-result.json | sed 's/.*backup_id\":\"\\([0-9]*\\).*/\\1/g'`
-
-# # tar from within the backup directory
-# cd $backup_id
-# # include the JSON in the tarball
-# cp ../backup-result.json .
-# tar -czf #{backupdir}/#{node['ma2']['backup']['prefix']}${backup_id}.tgz backup-result.json *
-# tidy up temporary backup content
-# cd ..
 
 # tar the timestamped backup directory and JSON file
 tar -czf #{backupdir}/#{node['ma2']['backup']['prefix']}${backup_id}.tgz backup-result.json $backup_id
 
+# tidy up
 rm -rf ${backup_id}
+
+# that's all
 "
 end
 
