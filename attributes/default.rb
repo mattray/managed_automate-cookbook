@@ -21,6 +21,7 @@
 # set location to copy the airgap installation bundle and chef-automate command
 default['ma2']['aib']['dir'] = Chef::Config[:file_cache_path]
 default['ma2']['aib']['file'] = 'chef-automate-airgap.aib'
+default['ma2']['aib']['url'] = nil
 
 # set location of the chef-automate CLI
 default['ma2']['cli_path'] = Chef::Config[:file_cache_path]
@@ -32,4 +33,5 @@ default['ma2']['sysctl']['vm.dirty_ratio'] = 15
 default['ma2']['sysctl']['vm.dirty_background_ratio'] = 35
 default['ma2']['sysctl']['vm.dirty_expire_centisecs'] = 20000
 
-default['ma2']['license'] = nil
+default['ma2']['license']['string'] = nil
+default['ma2']['license']['url'] = nil

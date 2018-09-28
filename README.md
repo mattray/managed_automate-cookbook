@@ -6,7 +6,7 @@ Deploys and configures the Chef Automate 2 server in an airgapped, stateless mod
 
 ## default ##
 
-Installs Chef Automate on a single airgapped box in a new deployment.
+Installs Chef Automate on a single airgapped box in a new deployment. The AIB file may be a URL or a file. The license may be referred as a URL or a string in an attribute.
 
 ## airgap_bundle ##
 
