@@ -103,16 +103,7 @@ execute 'chef-automate deploy' do
 end
 
 execute 'chef-automate license apply' do
-<<<<<<< HEAD
-<<<<<<< HEAD
   command "#{aibchef} license apply #{licensefile}"
-=======
-=======
->>>>>>> c299b0ae94a6e72038b3b9a2c66cdc51b19f5c67
-  command "#{aibchef} license apply #{node['ma2']['license']}"
-  sensitive true
-  not_if { node['ma2']['license'].nil? }
->>>>>>> Changes for cookstyle compliance
   not_if "#{aibchef} license status | grep '^License ID'"
 end
 
