@@ -24,3 +24,7 @@ This file is used to list changes made in each version of the managed-automate2 
 
 - aib as a URL or a file in the default recipe
 - license as a URL or a string in the default recipe
+
+# 0.6.0
+
+- Original AIB filename is now preserved in addition to generic name.

@@ -10,7 +10,7 @@ Installs Chef Automate on a single airgapped box in a new deployment. The AIB fi
 
 ## airgap_bundle ##
 
-This recipe requires internet access and is used to create an airgap installation bundle from the "current" release channel. We will be able to use this same recipe to generate bundles that may be used for upgrades eventually.
+This recipe requires internet access and is used to create an airgap installation bundle from the "current" release channel. It copies the download AIB file to a destination directory with both the original filename and a generic filename for consistent installations (if desired). It will download a full AIB every run (currently 600 megabytes), so you may want to limit it to daily usage.
 
 ## backup
 
