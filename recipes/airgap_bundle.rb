@@ -7,7 +7,6 @@
 package 'unzip'
 
 fcp = Chef::Config[:file_cache_path]
-fcpfile = fcp + '/' + node['ma2']['aib']['file']
 fcpchef = fcp + '/chef-automate'
 aibdir = node['ma2']['aib']['dir']
 aibfile = aibdir + '/' + node['ma2']['aib']['file']
@@ -35,14 +34,23 @@ execute "cp #{fcpchef} #{aibdir}" do
   not_if { ::File.exist?(aibchef) }
 end
 
-# successful execution of this command produces an Airgap Installation Bundle
-execute "#{fcpchef} airgap bundle create #{fcpfile}" do
+#successful execution of this command produces an Airgap Installation Bundle
+execute "#{fcpchef} airgap bundle create" do
   cwd fcp
-  not_if { ::File.exist?(fcpfile) }
-  not_if { ::File.exist?(aibfile) }
+  # it would be nice to have a guard to only run daily
 end
 
-# copy aib into the destination directory
-execute "cp #{fcpfile} #{aibfile}" do
-  not_if { ::File.exist?(aibfile) }
+ruby_block "copy new AIB file to #{aibdir}" do
+  block do
+    previousaib = `ls -t1 #{aibdir} | grep [0-9].aib$ | head -1`.strip
+    newaib = `ls -t1 #{fcp} | grep [0-9].aib$ | head -1`.strip
+    puts "\nExisting AIB: #{previousaib}"
+    puts "New AIB: #{newaib}"
+    unless newaib.eql?(previousaib)
+      require 'fileutils'
+      newfile = fcp+'/'+newaib
+      FileUtils.cp(newfile, aibdir)
+      FileUtils.cp(newfile, aibfile)
+    end
+  end
 end

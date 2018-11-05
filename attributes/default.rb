@@ -17,15 +17,13 @@
 # limitations under the License.
 #
 
-# airgap_bundle
+# airgap_bundle recipe
 # set location to copy the airgap installation bundle and chef-automate command
 default['ma2']['aib']['dir'] = Chef::Config[:file_cache_path]
 default['ma2']['aib']['file'] = 'chef-automate-airgap.aib'
 default['ma2']['aib']['url'] = nil
 
-# set location of the chef-automate CLI
-default['ma2']['cli_path'] = Chef::Config[:file_cache_path]
-
+# default recipe
 # sysctl settings to apply to make the preflight-check pass
 default['ma2']['sysctl']['fs.file-max'] = 64000
 default['ma2']['sysctl']['vm.max_map_count'] = 262144
@@ -35,3 +33,19 @@ default['ma2']['sysctl']['vm.dirty_expire_centisecs'] = 20000
 
 default['ma2']['license']['string'] = nil
 default['ma2']['license']['url'] = nil
+
+# backup recipe
+# schedule via cron
+# where A2 stores internal backups
+default['ma2']['backup']['internal']['dir'] = '/var/opt/chef-automate/backups'
+# where we want to write the backups to for
+default['ma2']['backup']['external']['dir'] = '/tmp/backups'
+default['ma2']['backup']['prefix'] = 'a2backup-'
+# cron settings for scheduling backups
+default['ma2']['backup']['cron']['minute'] = '30'
+default['ma2']['backup']['cron']['hour'] = '2'
+default['ma2']['backup']['cron']['day'] = '*'
+
+# restore recipe
+default['ma2']['restore']['dir'] = ''
+default['ma2']['restore']['file'] = ''

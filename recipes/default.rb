@@ -95,11 +95,35 @@ execute "#{aibchef} init-config --upgrade-strategy none" do
   not_if { ::File.exist?("#{fcp}/config.toml") }
 end
 
-# deploy chef automate
-execute 'chef-automate deploy' do
-  command "#{aibchef} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{aibfile}"
-  cwd fcp
-  not_if { ::File.exist?("#{fcp}/automate-credentials.toml") }
+# deploy or restore
+restorefile = node['ma2']['restore']['dir'] + '/' + node['ma2']['restore']['file']
+
+if !restorefile.nil? && ::File.exist?(restorefile)
+  restoredir = fcp + '/a2restore'
+  directory restoredir
+
+  # unpack backup tarball if previous backup JSON doesn't exist
+  execute "tar -xzf #{restorefile}"  do
+    command "tar -C #{restoredir} -xzf #{restorefile}"
+    action :run
+    not_if { File.exist?(restoredir + '/backup-result.json') }
+  end
+
+  ruby_block 'chef-automate restore' do
+    block do
+      backup = `ls -1 #{restoredir} | head -1`.strip
+      puts "\nRestoring: #{backup}"
+      shell_out!("#{aibchef} backup restore --skip-preflight --airgap-bundle #{aibfile} -b #{restoredir} #{backup}")
+    end
+    action :nothing
+    subscribes :run, "execute[tar -xzf #{restorefile}]", :immediately
+  end
+else
+  execute 'chef-automate deploy' do
+    command "#{aibchef} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{aibfile}"
+    cwd fcp
+    not_if { ::File.exist?("#{fcp}/automate-credentials.toml") }
+  end
 end
 
 execute 'chef-automate license apply' do
