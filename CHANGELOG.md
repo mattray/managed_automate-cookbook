@@ -28,3 +28,4 @@ This file is used to list changes made in each version of the managed-automate2 
 # 0.6.0
 
 - Original AIB filename is now preserved in addition to generic name.
+- Add support for backup recipe and restoring from a backup file.
