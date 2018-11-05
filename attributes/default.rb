@@ -45,3 +45,7 @@ default['ma2']['backup']['prefix'] = 'a2backup-'
 default['ma2']['backup']['cron']['minute'] = '30'
 default['ma2']['backup']['cron']['hour'] = '2'
 default['ma2']['backup']['cron']['day'] = '*'
+
+# restore recipe
+default['ma2']['restore']['dir'] = ''
+default['ma2']['restore']['file'] = ''

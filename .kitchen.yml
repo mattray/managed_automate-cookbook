@@ -40,6 +40,12 @@ suites:
       inspec_tests:
         - test/integration/default
         - test/integration/backup
+  - name: restore
+    provisioner:
+      policyfile: policyfiles/restore.rb
+    verifier:
+      inspec_tests:
+        - test/integration/default
   - name: aib
     provisioner:
       named_run_list: aib

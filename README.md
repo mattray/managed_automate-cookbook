@@ -6,7 +6,7 @@ Deploys and configures the Chef Automate 2 server in an airgapped, stateless mod
 
 ## default ##
 
-Installs Chef Automate on a single airgapped box in a new deployment. The AIB file may be a URL or a file. The license may be referred as a URL or a string in an attribute.
+Installs Chef Automate on a single airgapped box in a new deployment. The AIB file may be a URL or a file. The license may be referred as a URL or a string in an attribute. Will attempt to restore if a backup file is specified in the attributes.
 
 ## airgap_bundle ##
 
@@ -28,6 +28,8 @@ The included `.kitchen.yml` provides testing scenarios for the following:
 
   * `default`: tests installing from a previously downloaded `chef-automate` and `chef-automate-airgap.aib` (use the `aib` suite to create this if necessary) to the shared `test` directory.
   * `url`: tests installing from a previously downloaded `chef-automate-airgap.aib` and license via URLs.
+  * `backup`: install and configure backups.
+  * `restore`: install from a backup .tgz.
   * `aib`: tests creating an airgap bundle for installing Automate offline. It writes `chef-automate` and `chef-automate-airgap.aib` to the shared `test` directory.
   * `full`: performs both the airgap bundle creation and installation.
 
