@@ -24,20 +24,25 @@ platforms:
 
 suites:
   - name: default
-    attributes:
-      ma2:
-        aib:
-          dir: /tmp/test
     verifier:
       inspec_tests:
         - test/integration/default
+  - name: url
+    provisioner:
+      policyfile: policyfiles/url.rb
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: backup
+    provisioner:
+      named_run_list: backup
+    verifier:
+      inspec_tests:
+        - test/integration/default
+        - test/integration/backup
   - name: aib
     provisioner:
       named_run_list: aib
-    attributes:
-      ma2:
-        aib:
-          dir: /tmp/test
     verifier:
       inspec_tests:
         - test/integration/aib
@@ -52,3 +57,4 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/default
+        - test/integration/backup
