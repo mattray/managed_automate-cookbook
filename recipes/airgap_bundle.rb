@@ -7,7 +7,6 @@
 package 'unzip'
 
 fcp = Chef::Config[:file_cache_path]
-fcpfile = fcp + '/' + node['ma2']['aib']['file']
 fcpchef = fcp + '/chef-automate'
 aibdir = node['ma2']['aib']['dir']
 aibfile = aibdir + '/' + node['ma2']['aib']['file']
