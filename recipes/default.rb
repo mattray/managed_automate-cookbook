@@ -96,7 +96,9 @@ execute "#{aibchef} init-config --upgrade-strategy none" do
 end
 
 # deploy or restore
-restorefile = node['ma2']['restore']['dir'] + '/' + node['ma2']['restore']['file']
+unless node['ma2']['restore']['file'].empty? || node['ma2']['restore']['dir'].empty?
+  restorefile = node['ma2']['restore']['dir'] + '/' + node['ma2']['restore']['file']
+end
 
 if !restorefile.nil? && ::File.exist?(restorefile)
   restoredir = fcp + '/a2restore'
@@ -119,11 +121,15 @@ if !restorefile.nil? && ::File.exist?(restorefile)
     subscribes :run, "execute[tar -xzf #{restorefile}]", :immediately
   end
 else
+  # check if we're upgrading a running system
+  # if
+  # else
   execute 'chef-automate deploy' do
     command "#{aibchef} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{aibfile}"
     cwd fcp
     not_if { ::File.exist?("#{fcp}/automate-credentials.toml") }
   end
+  #end
 end
 
 execute 'chef-automate license apply' do
