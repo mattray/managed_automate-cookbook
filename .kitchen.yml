@@ -49,6 +49,10 @@ suites:
   - name: aib
     provisioner:
       named_run_list: aib
+    attributes:
+      ma2:
+        aib:
+          file: 'chef-automate-airgap.aib'
     verifier:
       inspec_tests:
         - test/integration/aib
