@@ -4,24 +4,124 @@
 #
 
 fcp = Chef::Config[:file_cache_path]
-aibdir = node['ma2']['aib']['dir']
-aibfile = aibdir + '/' + node['ma2']['aib']['file']
-aibchef = aibdir + '/chef-automate'
-licensefile = fcp + '/automate.license'
+chefautomate = node['ma2']['aib']['dir'] + '/chef-automate'
 
-# if the aib file is not there download it
-unless node['ma2']['aib']['url'].nil?
-  remote_file aibfile do
-    source node['ma2']['aib']['url']
-    not_if { ::File.exist?(aibfile) }
+# PREFLIGHT-CHECK
+include_recipe 'managed-automate2::_preflight_check'
+
+# INSTALL, UPGRADE OR RESTORE?
+installfile = node['ma2']['aib']['dir'] + '/' + node['ma2']['aib']['file']
+installurl = node['ma2']['aib']['url']
+
+# is Automate already installed?
+installed = false
+upgrade = false
+restore = false
+
+# is Automate installed?
+versions = `#{chefautomate} version`.split
+if versions[5].nil?
+  currentversion = -1
+else
+  installed = true
+  currentversion = versions[5]
+end
+
+# if we have an upgrade URL or we have an upgrade file and a directory, it's an upgrade
+if node['ma2']['upgrade']['url'] || (node['ma2']['upgrade']['file'] && node['ma2']['upgrade']['dir'])
+  upgradeversion = node['ma2']['upgrade']['version']
+  upgradefile = node['ma2']['upgrade']['dir'] + '/' + node['ma2']['upgrade']['file']
+  upgradeurl = node['ma2']['upgrade']['url']
+  upgrade = true
+end
+
+# if it's not installed but there is an upgrade, use the upgrade to install instead
+if upgrade && !installed
+  log 'INSTALL NOT AN UPGRADE'
+  upgrade = false
+  installfile = upgradefile
+  installurl = upgradeurl
+end
+
+# is this a restore?
+if node['ma2']['restore']['file'] && node['ma2']['restore']['dir']
+  restorefile = node['ma2']['restore']['dir'] + '/' + node['ma2']['restore']['file']
+  restore = true if ::File.exist?(restorefile)
+end
+
+if upgrade
+  log "UPGRADE #{currentversion} to #{upgradeversion}" do
+    only_if { upgradeversion.to_i > currentversion.to_i }
+  end
+  # if the upgrade file is not there download it
+  if upgradeurl
+    remote_file upgradefile do
+      source upgradeurl
+      not_if { ::File.exist?(upgradefile) }
+    end
+  end
+  # upgrade
+  execute 'chef-automate upgrade run' do
+    command "#{chefautomate} upgrade run --airgap-bundle #{upgradefile}"
+    cwd fcp
+    only_if { upgradeversion.to_i > currentversion.to_i }
+  end
+
+elsif restore
+  restoredir = fcp + '/a2restore'
+  directory restoredir
+  log "RESTORE #{restorefile}" do
+    not_if { File.exist?(restoredir + '/backup-result.json') }
+  end
+  # unpack backup tarball if previous backup JSON doesn't exist
+  execute "tar -xzf #{restorefile}" do
+    command "tar -C #{restoredir} -xzf #{restorefile}"
+    action :run
+    not_if { File.exist?(restoredir + '/backup-result.json') }
+  end
+  ruby_block 'chef-automate restore' do
+    block do
+      backup = `ls -1 #{restoredir} | head -1`.strip
+      puts "\nRestoring: #{backup}"
+      shell_out!("#{chefautomate} backup restore --skip-preflight --airgap-bundle #{installfile} -b #{restoredir} #{backup}")
+    end
+    action :nothing
+    subscribes :run, "execute[tar -xzf #{restorefile}]", :immediately
+  end
+
+else
+  log "INSTALL #{installfile}" do
+    not_if { installed }
+  end
+  # if the install file is not there download it
+  if installurl
+    remote_file installfile do
+      source installurl
+      not_if { installed || ::File.exist?(installfile) }
+    end
+  end
+  # create default configuration
+  execute "#{chefautomate} init-config --upgrade-strategy none" do
+    cwd fcp
+    not_if { installed || ::File.exist?("#{fcp}/config.toml") }
+  end
+  # install
+  execute 'chef-automate deploy' do
+    command "#{chefautomate} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{installfile}"
+    cwd fcp
+    not_if { installed || ::File.exist?("#{fcp}/automate-credentials.toml") }
   end
 end
+# END OF INSTALL, UPGRADE OR RESTORE?
+
+# LICENSING
+licensefile = fcp + '/automate.license'
 
 # get the license from a URL
 unless node['ma2']['license']['url'].nil?
   remote_file licensefile do
     source node['ma2']['license']['url']
-    not_if { ::File.exist?(licensefile) }
+    mode '400'
   end
 end
 
@@ -30,111 +130,13 @@ unless node['ma2']['license']['string'].nil?
   file licensefile do
     content node['ma2']['license']['string']
     sensitive true
-    not_if { ::File.exist?(licensefile) }
+    mode '400'
   end
-end
-
-# prepare for preflight-check
-
-# OK |  running as root
-# OK |  volume: has 40GB avail (need 5GB for installation)
-# OK |  automate not already deployed
-# OK |  initial required ports are available
-# OK |  init system is systemd
-# OK |  found required command useradd
-# OK |  system memory is at least 2000000 KB (2GB)
-# OK |  fs.file-max must be at least 64000
-# OK |  vm.max_map_count is at least 262144
-# OK |  vm.dirty_ratio is between 5 and 30
-# OK |  vm.dirty_background_ratio is between 10 and 60
-# OK |  vm.dirty_expire_centisecs must be between 10000 and 30000
-
-# fs.file-max is at least 64000
-fs_file_max = `sysctl -n fs.file-max`.strip.to_i
-sysctl_param 'fs.file-max' do
-  value node['ma2']['sysctl']['fs.file-max']
-  not_if { fs_file_max > 64000 }
-end
-
-# vm.max_map_count must be at least 262144
-vm_max_map_count = `sysctl -n vm.max_map_count`.strip.to_i
-sysctl_param 'vm.max_map_count' do
-  value node['ma2']['sysctl']['vm.max_map_count']
-  not_if { vm_max_map_count > 262144 }
-end
-
-# vm.dirty_ratio is between 5 and 30
-vm_dirty_ratio = `sysctl -n vm.dirty_ratio`.strip.to_i
-sysctl_param 'vm.dirty_ratio' do
-  value node['ma2']['sysctl']['vm.dirty_ratio']
-  not_if { (vm_dirty_ratio > 5) && (vm_dirty_ratio < 30) }
-end
-
-# vm.dirty_background_ratio is between 10 and 60
-vm_dirty_background_ratio = `sysctl -n vm.dirty_background_ratio`.strip.to_i
-sysctl_param 'vm.dirty_background_ratio' do
-  value node['ma2']['sysctl']['vm.dirty_background_ratio']
-  not_if { (vm_dirty_background_ratio > 10) && (vm_dirty_background_ratio < 60) }
-end
-
-# vm.dirty_expire_centisecs must be between 10000 and 30000
-vm_dirty_expire_centisecs = `sysctl -n vm.dirty_expire_centisecs`.strip.to_i
-sysctl_param 'vm.dirty_expire_centisecs' do
-  value node['ma2']['sysctl']['vm.dirty_expire_centisecs']
-  not_if { (vm_dirty_expire_centisecs > 10000) && (vm_dirty_expire_centisecs < 30000) }
-end
-
-# Verify the installation is ready to run Automate 2
-execute "#{aibchef} preflight-check --airgap" do
-  not_if { ::File.exist?("#{fcp}/config.toml") }
-end
-
-# create default configuration
-execute "#{aibchef} init-config --upgrade-strategy none" do
-  cwd fcp
-  not_if { ::File.exist?("#{fcp}/config.toml") }
-end
-
-# deploy or restore
-unless node['ma2']['restore']['file'].empty? || node['ma2']['restore']['dir'].empty?
-  restorefile = node['ma2']['restore']['dir'] + '/' + node['ma2']['restore']['file']
-end
-
-if !restorefile.nil? && ::File.exist?(restorefile)
-  restoredir = fcp + '/a2restore'
-  directory restoredir
-
-  # unpack backup tarball if previous backup JSON doesn't exist
-  execute "tar -xzf #{restorefile}"  do
-    command "tar -C #{restoredir} -xzf #{restorefile}"
-    action :run
-    not_if { File.exist?(restoredir + '/backup-result.json') }
-  end
-
-  ruby_block 'chef-automate restore' do
-    block do
-      backup = `ls -1 #{restoredir} | head -1`.strip
-      puts "\nRestoring: #{backup}"
-      shell_out!("#{aibchef} backup restore --skip-preflight --airgap-bundle #{aibfile} -b #{restoredir} #{backup}")
-    end
-    action :nothing
-    subscribes :run, "execute[tar -xzf #{restorefile}]", :immediately
-  end
-else
-  # check if we're upgrading a running system
-  # if
-  # else
-  execute 'chef-automate deploy' do
-    command "#{aibchef} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{aibfile}"
-    cwd fcp
-    not_if { ::File.exist?("#{fcp}/automate-credentials.toml") }
-  end
-  #end
 end
 
 execute 'chef-automate license apply' do
-  command "#{aibchef} license apply #{licensefile}"
-  not_if "#{aibchef} license status | grep '^License ID'"
+  command "#{chefautomate} license apply #{licensefile}"
+  not_if "#{chefautomate} license status | grep '^License ID'"
 end
 
 # should we push the contents of automate-credentials.toml into an attribute or

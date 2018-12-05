@@ -15,5 +15,16 @@ override['ma2']['backup']['cron']['hour'] = '*'
 override['ma2']['backup']['internal']['dir'] = '/tmp/A2backups'
 
 override['ma2']['aib']['dir'] = '/tmp/test'
-override['ma2']['aib']['file'] = 'automate-20181020020209.aib'
-override['ma2']['license']['string'] = 'redactedbutpasteyoursin'
+override['ma2']['aib']['file'] = 'automate-20181112131523.aib'
+# override['ma2']['aib']['file'] = 'automate-20181118185209.aib'
+# override['ma2']['aib']['file'] = 'automate-20181126154627.aib'
+
+override['ma2']['upgrade']['dir'] = '/tmp/test'
+# override['ma2']['upgrade']['file'] = 'automate-20181112131523.aib'
+# override['ma2']['upgrade']['version'] = 20181112131523
+# override['ma2']['upgrade']['file'] = 'automate-20181118185209.aib'
+# override['ma2']['upgrade']['version'] = '20181118185209'
+# override['ma2']['upgrade']['file'] = 'automate-20181126154627.aib'
+# override['ma2']['upgrade']['version'] = '20181126154627'
+
+override['ma2']['license']['url'] = 'file://localhost/tmp/test/a2.lic'

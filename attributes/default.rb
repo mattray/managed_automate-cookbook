@@ -22,6 +22,12 @@
 default['ma2']['aib']['dir'] = Chef::Config[:file_cache_path]
 default['ma2']['aib']['file'] = 'chef-automate-airgap.aib'
 default['ma2']['aib']['url'] = nil
+default['ma2']['upgrade']['dir'] = nil
+default['ma2']['upgrade']['file'] = nil
+default['ma2']['upgrade']['url'] = nil
+default['ma2']['upgrade']['version'] = nil
+default['ma2']['restore']['dir'] = nil
+default['ma2']['restore']['file'] = nil
 
 # default recipe
 # sysctl settings to apply to make the preflight-check pass
@@ -45,7 +51,3 @@ default['ma2']['backup']['prefix'] = 'a2backup-'
 default['ma2']['backup']['cron']['minute'] = '30'
 default['ma2']['backup']['cron']['hour'] = '2'
 default['ma2']['backup']['cron']['day'] = '*'
-
-# restore recipe
-default['ma2']['restore']['dir'] = ''
-default['ma2']['restore']['file'] = ''
