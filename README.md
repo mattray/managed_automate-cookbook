@@ -6,16 +6,16 @@ Deploys and configures the Chef Automate 2 server in an airgapped, stateless mod
 
 ## default ##
 
-Installs or upgrades Chef Automate on a single airgapped box in a new deployment. The AIB or upgrade file may be a URL or a file, similar to this:
+Installs or upgrades Chef Automate on a single airgapped box in a new deployment. The download the `chef-automate` commands before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma2']['aib']['dir']` directory. The AIB or upgrade file may be a URL or a file, similar to this:
 
     node['ma2']['aib']['dir'] = '/tmp
     node['ma2']['aib']['file'] = 'automate-20181112131523.aib'
 
-The license may be referred as a URL or a string in an attribute. Will attempt to restore if a backup file is specified in the attributes.
+The license may be referred as a URL or a string in an attribute. The recipe will attempt to restore if a backup file is specified in the attributes.
 
 ## airgap_bundle ##
 
-This recipe requires internet access and is used to create an airgap installation bundle from the "current" release channel. It copies the download AIB file to a destination directory with both the original filename and a generic filename for consistent installations (if desired). It will download a full AIB every run (currently 600 megabytes), so you may want to limit it to daily usage.
+This recipe requires internet access and is used to create an airgap installation bundle (AIB file) from the "current" release channel. It copies the download AIB file to a destination directory with both the original filename and a generic filename for consistent installations (if desired). It will download a full AIB every run (currently 600 megabytes), so you may want to limit it to daily usage.
 
 ## backup
 
