@@ -1,0 +1,70 @@
+---
+driver:
+  name: vagrant
+  synced_folders:
+      - ['test', '/tmp/test', 'create: true', owner: "root", group: "root"]
+  customize:
+    memory: 2304 # Automate needs > 2GB
+    cpus: 2
+  network:
+    - ["private_network", {ip: "192.168.33.33"}]
+
+provisioner:
+  name: chef_zero
+  policyfile: policyfiles/chef-automate2.rb
+  always_update_cookbooks: true
+  product_name: chef
+  product_version: 13.8.5
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-7
+
+suites:
+  - name: default
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: url
+    provisioner:
+      policyfile: policyfiles/url.rb
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: backup
+    provisioner:
+      named_run_list: backup
+    verifier:
+      inspec_tests:
+        - test/integration/default
+        - test/integration/backup
+  - name: restore
+    provisioner:
+      policyfile: policyfiles/restore.rb
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: aib
+    provisioner:
+      named_run_list: aib
+    attributes:
+      ma2:
+        aib:
+          file: 'chef-automate-airgap.aib'
+    verifier:
+      inspec_tests:
+        - test/integration/aib
+      attributes:
+        fcpchef: /tmp/kitchen/cache/chef-automate
+        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
+        aibchef: /tmp/test/chef-automate
+        aibfile: /tmp/test/chef-automate-airgap.aib
+  - name: full
+    provisioner:
+      named_run_list: full
+    verifier:
+      inspec_tests:
+        - test/integration/default
+        - test/integration/backup
