@@ -34,7 +34,7 @@ execute "cp #{fcpchef} #{aibdir}" do
   not_if { ::File.exist?(aibchef) }
 end
 
-#successful execution of this command produces an Airgap Installation Bundle
+# successful execution of this command produces an Airgap Installation Bundle
 execute "#{fcpchef} airgap bundle create" do
   cwd fcp
   # it would be nice to have a guard to only run daily
@@ -42,13 +42,13 @@ end
 
 ruby_block "copy new AIB file to #{aibdir}" do
   block do
-    previousaib = `ls -t1 #{aibdir} | grep [0-9].aib$ | head -1`.strip
-    newaib = `ls -t1 #{fcp} | grep [0-9].aib$ | head -1`.strip
+    previousaib = shell_out("ls -t1 #{aibdir} | grep [0-9].aib$ | head -1").stdout.strip
+    newaib = shell_out("ls -t1 #{fcp} | grep [0-9].aib$ | head -1").stdout.strip
     puts "\nExisting AIB: #{previousaib}"
     puts "New AIB: #{newaib}"
     unless newaib.eql?(previousaib)
       require 'fileutils'
-      newfile = fcp+'/'+newaib
+      newfile = fcp + '/' + newaib
       FileUtils.cp(newfile, aibdir)
       FileUtils.cp(newfile, aibfile)
     end

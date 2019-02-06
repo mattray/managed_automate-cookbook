@@ -28,8 +28,8 @@ command = intbackupdir + '/backup.sh'
 
 # shell script for backup
 file command do
-   mode '0700'
-   content "#!/bin/sh
+  mode '0700'
+  content "#!/bin/sh
 cd #{intbackupdir}
 /bin/chef-automate backup create --result-json backup-result.json > backup.log 2>&1
 backup_id=`sed 's/.*backup_id\":\"\\([0-9]*\\).*/\\1/g' backup-result.json`
@@ -39,7 +39,7 @@ end
 
 # schedule backup on a recurring cron job. Override attributes as necessary
 cron 'chef-automate backup create' do
-  environment ({ 'PWD' => intbackupdir })
+  environment('PWD' => intbackupdir)
   command command
   minute node['ma2']['backup']['cron']['minute']
   hour node['ma2']['backup']['cron']['hour']

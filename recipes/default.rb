@@ -19,7 +19,7 @@ upgrade = false
 restore = false
 
 # is Automate installed?
-versions = `#{chefautomate} version`.split
+versions = shell_out("#{chefautomate} version").stdout.split
 if versions[5].nil?
   currentversion = -1
 else
@@ -81,7 +81,7 @@ elsif restore
   end
   ruby_block 'chef-automate restore' do
     block do
-      backup = `ls -1 #{restoredir} | head -1`.strip
+      backup = shell_out("ls -1 #{restoredir} | head -1").stdout.strip
       puts "\nRestoring: #{backup}"
       shell_out!("#{chefautomate} backup restore --skip-preflight --airgap-bundle #{installfile} -b #{restoredir} #{backup}")
     end
