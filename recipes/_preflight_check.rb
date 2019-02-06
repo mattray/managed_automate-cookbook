@@ -44,5 +44,5 @@ end
 
 # Verify the installation is ready to run Automate 2
 execute "#{chefautomate} preflight-check --airgap" do
-  not_if { ::File.exist?("#{fcp}/config.toml") }
+  not_if { ::File.exist?('/bin/chef-automate') }
 end
