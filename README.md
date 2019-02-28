@@ -11,7 +11,7 @@ Installs or upgrades Chef Automate on a single airgapped box in a new deployment
     node['ma2']['aib']['dir'] = '/tmp
     node['ma2']['aib']['file'] = 'automate-20181112131523.aib'
 
-The license may be referred as a URL or a string in an attribute. The recipe will attempt to restore if a backup file is specified in the attributes.
+The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a URL or a string in an attribute. The recipe will attempt to restore if a backup file is specified in the attributes.
 
 ## airgap_bundle ##
 

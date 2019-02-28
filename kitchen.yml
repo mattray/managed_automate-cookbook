@@ -4,7 +4,7 @@ driver:
   synced_folders:
       - ['test', '/tmp/test', 'create: true', owner: "root", group: "root"]
   customize:
-    memory: 2304 # Automate needs > 2GB
+    memory: 4096 # Automate needs > 2GB
     cpus: 2
   network:
     - ["private_network", {ip: "192.168.33.33"}]
