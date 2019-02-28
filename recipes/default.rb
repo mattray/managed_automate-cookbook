@@ -114,6 +114,9 @@ else
 end
 # END OF INSTALL, UPGRADE OR RESTORE?
 
+# TUNE ELASTICSEARCH
+include_recipe 'managed-automate2::_elasticsearch'
+
 # LICENSING
 licensefile = fcp + '/automate.license'
 

@@ -36,6 +36,7 @@ default['ma2']['sysctl']['vm.max_map_count'] = 262144
 default['ma2']['sysctl']['vm.dirty_ratio'] = 15
 default['ma2']['sysctl']['vm.dirty_background_ratio'] = 35
 default['ma2']['sysctl']['vm.dirty_expire_centisecs'] = 20000
+default['ma2']['sysctl']['vm.swappiness'] = 1
 
 default['ma2']['license']['string'] = nil
 default['ma2']['license']['url'] = nil

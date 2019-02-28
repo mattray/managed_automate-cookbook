@@ -42,6 +42,18 @@ describe file '/tmp/kitchen/cache/automate-credentials.toml' do
   its('content') { should match(/username = "admin"/) }
 end
 
+# elasticsearch
+# vm.swappiness should be 1
+describe kernel_parameter('vm.swappiness') do
+  its('value') { should be 1 }
+end
+
+describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+  it { should exist }
+  it { should be_file }
+  its('content') { should match(/heapsize = "1894m"/) }
+end
+
 describe command('chef-automate') do
   it { should exist }
 end

@@ -33,3 +33,11 @@ This file is used to list changes made in each version of the managed-automate2 
 # 0.7.0
 
 - refactored install/restore/upgrade logic to manage upgrades
+
+# 0.7.1
+
+- code cleanup and updated tests
+
+# 0.8.0
+
+- added Elasticsearch tuning via the private `_elasticsearch.rb` recipe
