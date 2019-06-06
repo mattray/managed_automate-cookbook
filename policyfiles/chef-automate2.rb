@@ -18,7 +18,7 @@ override['ma2']['aib']['dir'] = '/tmp/test'
 override['ma2']['upgrade']['dir'] = '/tmp/test'
 
 # run default with a file, then uncomment to test upgrade
-override['ma2']['aib']['file'] = 'automate-20190207004055.aib'
+#override['ma2']['aib']['file'] = 'automate-20190207004055.aib'
 # override['ma2']['upgrade']['version'] = '20190131011635'
 # override['ma2']['upgrade']['file'] = 'automate-20190131011635.aib'
 

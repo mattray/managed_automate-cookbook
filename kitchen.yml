@@ -4,7 +4,7 @@ driver:
   synced_folders:
       - ['test', '/tmp/test', 'create: true', owner: "root", group: "root"]
   customize:
-    memory: 4096 # Automate needs > 2GB
+    memory: 6144 # Automate needs > 2GB
     cpus: 2
   network:
     - ["private_network", {ip: "192.168.33.33"}]
@@ -13,8 +13,9 @@ provisioner:
   name: chef_zero
   policyfile: policyfiles/chef-automate2.rb
   always_update_cookbooks: true
+  chef_license: accept
   product_name: chef
-  product_version: 13.8.5
+  product_version: 15
 
 verifier:
   name: inspec
@@ -23,30 +24,74 @@ platforms:
   - name: centos-7
 
 suites:
-  - name: default
+  - name: 14default
+    provisioner:
+      product_version: 14
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: url
+  - name: 15default
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: 14url
+    provisioner:
+      policyfile: policyfiles/url.rb
+      product_version: 14
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: 15url
     provisioner:
       policyfile: policyfiles/url.rb
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: backup
+  - name: 14backup
+    provisioner:
+      named_run_list: backup
+      product_version: 14
+    verifier:
+      inspec_tests:
+        - test/integration/default
+        - test/integration/backup
+  - name: 15backup
     provisioner:
       named_run_list: backup
     verifier:
       inspec_tests:
         - test/integration/default
         - test/integration/backup
-  - name: restore
+  - name: 14restore
+    provisioner:
+      policyfile: policyfiles/restore.rb
+      product_version: 14
+    verifier:
+      inspec_tests:
+        - test/integration/default
+  - name: 15restore
     provisioner:
       policyfile: policyfiles/restore.rb
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: aib
+  - name: 14aib
+    provisioner:
+      named_run_list: aib
+      product_version: 14
+    attributes:
+      ma2:
+        aib:
+          file: 'chef-automate-airgap.aib'
+    verifier:
+      inspec_tests:
+        - test/integration/aib
+      attributes:
+        fcpchef: /tmp/kitchen/cache/chef-automate
+        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
+        aibchef: /tmp/test/chef-automate
+        aibfile: /tmp/test/chef-automate-airgap.aib
+  - name: 15aib
     provisioner:
       named_run_list: aib
     attributes:
@@ -61,7 +106,15 @@ suites:
         fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
         aibchef: /tmp/test/chef-automate
         aibfile: /tmp/test/chef-automate-airgap.aib
-  - name: full
+  - name: 14full
+    provisioner:
+      named_run_list: full
+      product_version: 14
+    verifier:
+      inspec_tests:
+        - test/integration/default
+        - test/integration/backup
+  - name: 15full
     provisioner:
       named_run_list: full
     verifier:
