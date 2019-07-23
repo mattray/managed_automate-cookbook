@@ -41,3 +41,8 @@ This file is used to list changes made in each version of the managed-automate2 
 # 0.8.0
 
 - added Elasticsearch tuning via the private `_elasticsearch.rb` recipe
+
+# 0.9.0
+
+- move to Chef 14/15 and add testing support
+- remove sysctl cookbook dependency

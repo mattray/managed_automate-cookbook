@@ -51,7 +51,7 @@ end
 describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
   it { should exist }
   it { should be_file }
-  its('content') { should match(/heapsize = "1894m"/) }
+  its('content') { should match(/heapsize = "2902m"/) }
 end
 
 describe command('chef-automate') do
