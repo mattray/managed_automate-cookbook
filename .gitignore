@@ -21,3 +21,8 @@ policyfiles/*lock.json
 Berksfile.lock
 .zero-knife.rb
 Policyfile.lock.json
+
+# Testing
+test/*.aib
+test/*.lic
+test/chef-automate
