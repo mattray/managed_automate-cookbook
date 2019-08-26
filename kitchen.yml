@@ -80,7 +80,7 @@ suites:
       named_run_list: aib
       product_version: 14
     attributes:
-      ma2:
+      ma:
         aib:
           file: 'chef-automate-airgap.aib'
     verifier:
@@ -95,7 +95,7 @@ suites:
     provisioner:
       named_run_list: aib
     attributes:
-      ma2:
+      ma:
         aib:
           file: 'chef-automate-airgap.aib'
     verifier:

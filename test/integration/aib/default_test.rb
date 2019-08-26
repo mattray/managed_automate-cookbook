@@ -1,6 +1,6 @@
 # # encoding: utf-8
 
-# Inspec test for recipe managed-automate2::airgap_bundle
+# Inspec test for recipe managed_automate::airgap_bundle
 
 fcpchef = attribute('fcpchef', default: '/tmp/chef-automate')
 fcpfile = attribute('fcpfile', default: '/tmp/chef-automate-airgap.aib')

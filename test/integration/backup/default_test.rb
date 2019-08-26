@@ -1,6 +1,6 @@
 # # encoding: utf-8
 
-# Inspec test for recipe managed-automate2::backup
+# Inspec test for recipe managed_automate::backup
 
 # internal backup dir
 describe directory('/tmp/A2backups') do

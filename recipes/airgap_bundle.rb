@@ -1,10 +1,10 @@
 #
-# Cookbook:: managed-automate2
+# Cookbook:: managed_automate
 # Recipe:: airgap_bundle
 #
 
 automate_cli 'download the chef-automate CLI' do
-  directory node['ma2']['aib']['dir']
+  directory node['ma']['aib']['dir']
   action :download
 end
 
@@ -17,8 +17,8 @@ end
 
 
 
-# aibdir = node['ma2']['aib']['dir']
-# aibfile = aibdir + '/' + node['ma2']['aib']['file']
+# aibdir = node['ma']['aib']['dir']
+# aibfile = aibdir + '/' + node['ma']['aib']['file']
 # aibchef = aibdir + '/chef-automate'
 
 

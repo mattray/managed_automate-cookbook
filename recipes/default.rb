@@ -1,17 +1,17 @@
 #
-# Cookbook:: managed-automate2
+# Cookbook:: managed_automate
 # Recipe:: default
 #
 
 fcp = Chef::Config[:file_cache_path]
-chefautomate = node['ma2']['aib']['dir'] + '/chef-automate'
+chefautomate = node['ma']['aib']['dir'] + '/chef-automate'
 
 # PREFLIGHT-CHECK
-include_recipe 'managed-automate2::_preflight_check'
+include_recipe 'managed_automate::_preflight_check'
 
 # INSTALL, UPGRADE OR RESTORE?
-installfile = node['ma2']['aib']['dir'] + '/' + node['ma2']['aib']['file']
-installurl = node['ma2']['aib']['url']
+installfile = node['ma']['aib']['dir'] + '/' + node['ma']['aib']['file']
+installurl = node['ma']['aib']['url']
 
 # is Automate already installed?
 installed = false
@@ -28,10 +28,10 @@ else
 end
 
 # if we have an upgrade URL or we have an upgrade file and a directory, it's an upgrade
-if node['ma2']['upgrade']['url'] || (node['ma2']['upgrade']['file'] && node['ma2']['upgrade']['dir'])
-  upgradeversion = node['ma2']['upgrade']['version']
-  upgradefile = node['ma2']['upgrade']['dir'] + '/' + node['ma2']['upgrade']['file']
-  upgradeurl = node['ma2']['upgrade']['url']
+if node['ma']['upgrade']['url'] || (node['ma']['upgrade']['file'] && node['ma']['upgrade']['dir'])
+  upgradeversion = node['ma']['upgrade']['version']
+  upgradefile = node['ma']['upgrade']['dir'] + '/' + node['ma']['upgrade']['file']
+  upgradeurl = node['ma']['upgrade']['url']
   upgrade = true
 end
 
@@ -44,8 +44,8 @@ if upgrade && !installed
 end
 
 # is this a restore?
-if node['ma2']['restore']['file'] && node['ma2']['restore']['dir']
-  restorefile = node['ma2']['restore']['dir'] + '/' + node['ma2']['restore']['file']
+if node['ma']['restore']['file'] && node['ma']['restore']['dir']
+  restorefile = node['ma']['restore']['dir'] + '/' + node['ma']['restore']['file']
   restore = true if ::File.exist?(restorefile)
 end
 
@@ -115,23 +115,23 @@ end
 # END OF INSTALL, UPGRADE OR RESTORE?
 
 # TUNE ELASTICSEARCH
-include_recipe 'managed-automate2::_elasticsearch'
+include_recipe 'managed_automate::_elasticsearch'
 
 # LICENSING
 licensefile = fcp + '/automate.license'
 
 # get the license from a URL
-unless node['ma2']['license']['url'].nil?
+unless node['ma']['license']['url'].nil?
   remote_file licensefile do
-    source node['ma2']['license']['url']
+    source node['ma']['license']['url']
     mode '400'
   end
 end
 
 # or get the license from a string
-unless node['ma2']['license']['string'].nil?
+unless node['ma']['license']['string'].nil?
   file licensefile do
-    content node['ma2']['license']['string']
+    content node['ma']['license']['string']
     sensitive true
     mode '400'
   end
