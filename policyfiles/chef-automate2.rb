@@ -1,7 +1,6 @@
 name 'chef-automate'
 
 run_list 'managed_automate::default'
-named_run_list 'aib', 'managed_automate::airgap_bundle'
 named_run_list 'backup', 'managed_automate::default', 'managed_automate::backup'
 named_run_list 'full', 'managed_automate::airgap_bundle', 'managed_automate::default', 'managed_automate::backup'
 

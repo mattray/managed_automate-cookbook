@@ -7,14 +7,11 @@ fcpfile = attribute('fcpfile', default: '/tmp/chef-automate-airgap.aib')
 aibchef = attribute('aibchef', default: '/tmp/chef-automate')
 aibfile = attribute('aibfile', default: '/tmp/chef-automate-airgap.aib')
 
-describe package 'unzip' do
-  it { should be_installed }
-end
-
 describe.one do
   describe file(aibchef) do
     it { should exist }
     it { should be_file }
+    its('mode') { should cmp '0755' }
   end
 
   describe file(fcpchef) do

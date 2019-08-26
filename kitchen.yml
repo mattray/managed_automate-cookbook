@@ -24,6 +24,24 @@ platforms:
   - name: centos-7
 
 suites:
+  - name: aib_download
+    provisioner:
+      policyfile: policyfiles/airgap.rb
+  - name: aib_filename
+    provisioner:
+      policyfile: policyfiles/airgap.rb
+    attributes:
+      ma:
+        aib:
+          file: 'chef-automate-airgap.aib'
+    verifier:
+      inspec_tests:
+        - test/integration/aib
+      attributes:
+        fcpchef: /tmp/kitchen/cache/chef-automate
+        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
+        aibchef: /tmp/test/chef-automate
+        aibfile: /tmp/test/chef-automate-airgap.aib
   - name: 14default
     provisioner:
       product_version: 14
@@ -75,37 +93,6 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: 14aib
-    provisioner:
-      named_run_list: aib
-      product_version: 14
-    attributes:
-      ma:
-        aib:
-          file: 'chef-automate-airgap.aib'
-    verifier:
-      inspec_tests:
-        - test/integration/aib
-      attributes:
-        fcpchef: /tmp/kitchen/cache/chef-automate
-        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
-        aibchef: /tmp/test/chef-automate
-        aibfile: /tmp/test/chef-automate-airgap.aib
-  - name: 15aib
-    provisioner:
-      named_run_list: aib
-    attributes:
-      ma:
-        aib:
-          file: 'chef-automate-airgap.aib'
-    verifier:
-      inspec_tests:
-        - test/integration/aib
-      attributes:
-        fcpchef: /tmp/kitchen/cache/chef-automate
-        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
-        aibchef: /tmp/test/chef-automate
-        aibfile: /tmp/test/chef-automate-airgap.aib
   - name: 14full
     provisioner:
       named_run_list: full

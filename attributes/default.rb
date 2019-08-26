@@ -20,7 +20,7 @@
 # airgap_bundle recipe
 # set location to copy the airgap installation bundle and chef-automate command
 default['ma']['aib']['dir'] = Chef::Config[:file_cache_path]
-default['ma']['aib']['file'] = 'chef-automate-airgap.aib'
+default['ma']['aib']['file'] = nil
 default['ma']['aib']['url'] = nil
 default['ma']['upgrade']['dir'] = nil
 default['ma']['upgrade']['file'] = nil

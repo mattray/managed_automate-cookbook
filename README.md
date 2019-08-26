@@ -15,7 +15,7 @@ The server will be tuned for passing Automate's `preflight-check` and swap will 
 
 ## airgap_bundle ##
 
-This recipe requires internet access and is used to create an airgap installation bundle (AIB file) from the "current" release channel. It copies the download AIB file to a destination directory with both the original filename and a generic filename for consistent installations (if desired). It will download a full AIB every run (currently 600 megabytes), so you may want to limit it to daily usage.
+This recipe requires internet access and is used to download the `chef-automate` CLI and create an airgap installation bundle (AIB file) from the "current" release channel. It copies the downloaded AIB file to a destination directory with both the original filename and a generic filename for consistent installations if desired. It will download a full AIB every run (currently 600 megabytes), so you may want to limit it to daily usage.
 
 ## backup
 
