@@ -9,6 +9,9 @@ action :download do
 
   fcp = Chef::Config[:file_cache_path]
 
+  # if chef-automate CLI already exists, no-op
+  return if ::File.exist?("#{destination_dir}/#{destination_filename}")
+
   package 'unzip'
 
   # download, the create will update if changed according to docs
@@ -20,15 +23,10 @@ action :download do
   # https://docs.chef.io/resource_archive_file.html Chef 15 :(
   execute 'unzip -o chef-automate_linux_amd64.zip' do
     cwd fcp
-    action :nothing
-    subscribes :run, "remote_file[#{fcp}/chef-automate_linux_amd64.zip]", :immediately
   end
 
   # copy chef-automate into the destination directory
-  execute "cp #{fcp}/chef-automate #{destination_dir}/#{destination_filename}" do
-    action :nothing
-    subscribes :run, 'execute[unzip chef-automate_linux_amd64.zip]', :immediately
-  end
+  execute "cp #{fcp}/chef-automate #{destination_dir}/#{destination_filename}"
 
   # set execute permissions
   file "#{destination_dir}/#{destination_filename}" do
