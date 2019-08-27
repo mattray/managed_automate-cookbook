@@ -17,19 +17,23 @@
 # limitations under the License.
 #
 
+default['ma']['chef-automate'] = Chef::Config[:file_cache_path] + '/chef-automate'
+
 # airgap_bundle recipe
-# set location to copy the airgap installation bundle and chef-automate command
+# set location to download the airgap installation bundle and chef-automate command
 default['ma']['aib']['dir'] = Chef::Config[:file_cache_path]
 default['ma']['aib']['file'] = nil
-default['ma']['aib']['url'] = nil
-default['ma']['upgrade']['dir'] = nil
-default['ma']['upgrade']['file'] = nil
-default['ma']['upgrade']['url'] = nil
-default['ma']['upgrade']['version'] = nil
-default['ma']['restore']['dir'] = nil
-default['ma']['restore']['file'] = nil
 
 # default recipe
+default['ma']['install']['file'] = nil
+default['ma']['install']['url'] = nil
+default['ma']['restore']['file'] = nil
+default['ma']['restore']['url'] = nil
+default['ma']['upgrade']['file'] = nil
+default['ma']['upgrade']['url'] = nil
+default['ma']['license']['string'] = nil
+default['ma']['license']['url'] = nil
+
 # sysctl settings to apply to make the preflight-check pass
 default['ma']['sysctl']['fs.file-max'] = 64000
 default['ma']['sysctl']['vm.max_map_count'] = 262144
@@ -37,9 +41,6 @@ default['ma']['sysctl']['vm.dirty_ratio'] = 15
 default['ma']['sysctl']['vm.dirty_background_ratio'] = 35
 default['ma']['sysctl']['vm.dirty_expire_centisecs'] = 20000
 default['ma']['sysctl']['vm.swappiness'] = 1
-
-default['ma']['license']['string'] = nil
-default['ma']['license']['url'] = nil
 
 # backup recipe
 # schedule via cron

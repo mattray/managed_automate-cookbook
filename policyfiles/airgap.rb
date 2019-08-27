@@ -6,4 +6,5 @@ default_source :supermarket
 
 cookbook 'managed_automate', path: '..'
 
+override['ma']['chef-automate'] = '/tmp/test/chef-automate'
 override['ma']['aib']['dir'] = '/tmp/test'

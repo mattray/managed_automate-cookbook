@@ -3,9 +3,6 @@
 # Recipe:: _preflight_check
 #
 
-fcp = Chef::Config[:file_cache_path]
-chefautomate = node['ma']['aib']['dir'] + '/chef-automate'
-
 # PREFLIGHT-CHECK
 # fs.file-max is at least 64000
 fs_file_max = shell_out('sysctl -n fs.file-max').stdout.strip.to_i
@@ -43,6 +40,6 @@ sysctl_param 'vm.dirty_expire_centisecs' do
 end
 
 # Verify the installation is ready to run Automate 2
-execute "#{chefautomate} preflight-check --airgap" do
+execute "#{node['ma']['chef-automate']} preflight-check --airgap" do
   not_if { ::File.exist?('/bin/chef-automate') }
 end

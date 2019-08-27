@@ -1,16 +1,14 @@
 resource_name :automate_cli
 
-property :directory, String, name_property: true
-property :filename, String, default: 'chef-automate'
+property :chef_automate, String
 
 action :download do
-  destination_dir = new_resource.directory
-  destination_filename = new_resource.filename
+  chef_automate = new_resource.chef_automate
 
   fcp = Chef::Config[:file_cache_path]
 
   # if chef-automate CLI already exists, no-op
-  return if ::File.exist?("#{destination_dir}/#{destination_filename}")
+  return if ::File.exist?(chef_automate)
 
   package 'unzip'
 
@@ -25,11 +23,11 @@ action :download do
     cwd fcp
   end
 
-  # copy chef-automate into the destination directory
-  execute "cp #{fcp}/chef-automate #{destination_dir}/#{destination_filename}"
+  # copy chef-automate to the destination filename
+  execute "cp #{fcp}/chef-automate #{chef_automate}"
 
   # set execute permissions
-  file "#{destination_dir}/#{destination_filename}" do
+  file chef_automate do
     mode '0755'
   end
 end
