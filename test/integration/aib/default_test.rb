@@ -2,10 +2,10 @@
 
 # Inspec test for recipe managed_automate::airgap_bundle
 
-fcpchef = attribute('fcpchef', default: '/tmp/chef-automate')
-fcpfile = attribute('fcpfile', default: '/tmp/chef-automate-airgap.aib')
+fcpchef = attribute('fcpchef', default: '/root/chef-automate')
+fcpfile = attribute('fcpfile', default: '/root/chef-automate.aib')
 aibchef = attribute('aibchef', default: '/tmp/chef-automate')
-aibfile = attribute('aibfile', default: '/tmp/chef-automate-airgap.aib')
+aibfile = attribute('aibfile', default: '/tmp/chef-automate.aib')
 
 describe.one do
   describe file(aibchef) do
