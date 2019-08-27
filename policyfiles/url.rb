@@ -6,6 +6,6 @@ default_source :supermarket
 
 cookbook 'managed_automate', path: '..'
 
-override['ma']['aib']['dir'] = '/tmp/test'
-override['ma']['aib']['url'] = 'file://localhost/tmp/test/automate-20181112131523.aib'
+override['ma']['chef-automate'] = '/tmp/test/chef-automate'
+override['ma']['install']['url'] = 'file://localhost/tmp/test/chef-automate.aib'
 override['ma']['license']['url'] = 'file://localhost/tmp/test/a2.lic'

@@ -11,7 +11,7 @@ driver:
 
 provisioner:
   name: chef_zero
-  policyfile: policyfiles/chef-automate2.rb
+  policyfile: policyfiles/default.rb
   always_update_cookbooks: true
   chef_license: accept
   product_name: chef
@@ -33,15 +33,15 @@ suites:
     attributes:
       ma:
         aib:
-          file: 'chef-automate-airgap.aib'
+          file: 'chef-automate.aib'
     verifier:
       inspec_tests:
         - test/integration/aib
       attributes:
         fcpchef: /tmp/kitchen/cache/chef-automate
-        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
+        fcpfile: /tmp/kitchen/cache/chef-automate.aib
         aibchef: /tmp/test/chef-automate
-        aibfile: /tmp/test/chef-automate-airgap.aib
+        aibfile: /tmp/test/chef-automate.aib
   - name: 14default
     provisioner:
       product_version: 14
@@ -67,7 +67,7 @@ suites:
         - test/integration/default
   - name: 14backup
     provisioner:
-      named_run_list: backup
+      policyfile: policyfiles/backup.rb
       product_version: 14
     verifier:
       inspec_tests:
@@ -75,7 +75,7 @@ suites:
         - test/integration/backup
   - name: 15backup
     provisioner:
-      named_run_list: backup
+      policyfile: policyfiles/backup.rb
     verifier:
       inspec_tests:
         - test/integration/default
@@ -95,7 +95,7 @@ suites:
         - test/integration/default
   - name: 14full
     provisioner:
-      named_run_list: full
+      policyfile: policyfiles/everything.rb
       product_version: 14
     verifier:
       inspec_tests:
@@ -103,8 +103,14 @@ suites:
         - test/integration/backup
   - name: 15full
     provisioner:
-      named_run_list: full
+      policyfile: policyfiles/everything.rb
     verifier:
       inspec_tests:
+        - test/integration/aib
         - test/integration/default
         - test/integration/backup
+      attributes:
+        fcpchef: /tmp/kitchen/cache/chef-automate
+        fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
+        aibchef: /tmp/test/chef-automate
+        aibfile: /tmp/test/chef-automate-airgap.aib
