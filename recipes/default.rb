@@ -38,9 +38,11 @@ end
 # TUNE ELASTICSEARCH
 include_recipe 'managed_automate::_elasticsearch'
 
-# LICENSING
-# automate_license 'apply Chef Automate license' do
-#   license_file
-#   license_string
-#   action :install
-# end
+# LICENSE
+automate_license 'Apply Chef Automate license' do
+  file node['ma']['license']['file']
+  string node['ma']['license']['string']
+  url node['ma']['license']['url']
+  chef_automate node['ma']['chef-automate']
+  action :apply
+end

@@ -31,6 +31,8 @@ default['ma']['restore']['file'] = nil
 default['ma']['restore']['url'] = nil
 default['ma']['upgrade']['file'] = nil
 default['ma']['upgrade']['url'] = nil
+
+default['ma']['license']['file'] = nil
 default['ma']['license']['string'] = nil
 default['ma']['license']['url'] = nil
 

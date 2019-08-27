@@ -83,3 +83,9 @@ describe command('chef-automate status') do
   its ('stdout') { should match /^automate-gateway        running        ok/ }
   its ('stdout') { should match /^automate-load-balancer  running        ok/ }
 end
+
+describe command('chef-automate license status') do
+  its ('stdout') { should match /^Licensed to:/ }
+  its ('stdout') { should match /^License ID:/ }
+  its ('stdout') { should match /^Expiration Date:/ }
+end
