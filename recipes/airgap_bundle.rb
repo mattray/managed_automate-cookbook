@@ -3,10 +3,8 @@
 # Recipe:: airgap_bundle
 #
 
-automate_cli 'download the chef-automate CLI' do
-  chef_automate node['ma']['chef-automate']
-  action :download
-end
+# CHEF-AUTOMATE
+include_recipe 'managed_automate::_chef_automate'
 
 automate_airgap_bundle 'download the Automate airgap bundle' do
   directory node['ma']['aib']['dir']
