@@ -31,7 +31,7 @@ automate_airgap_install 'Upgrade Chef Automate' do
   install_file node['ma']['upgrade']['file']
   install_url node['ma']['upgrade']['url']
   chef_automate node['ma']['chef-automate']
-  only_if { node['ma']['upgrade']['file'] || node['ma']['upgrade']['url'] }
+  not_if { node['ma']['upgrade']['file'].nil? && node['ma']['upgrade']['url'].nil? }
   action :upgrade
 end
 
