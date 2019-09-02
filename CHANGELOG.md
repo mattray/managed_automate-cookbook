@@ -53,8 +53,10 @@ This file is used to list changes made in each version of the managed-automate2 
   - refactor attributes from 'ma2' to 'ma' namespace
 - refactor to Custom Resources
 - fix broken backups and restore
+- much more testing of upgrades
 - more resilient to nils
 - [https://github.com/mattray/managed-automate2-cookbook/issues/9](airgap_bundle safe for multiple runs)
-- [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
 
 # BACKLOG
+- [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
+- replace attributes with inputs for InSpec 4 tests (ChefDK 4)

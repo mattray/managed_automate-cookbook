@@ -47,11 +47,13 @@ default['ma']['sysctl']['vm.swappiness'] = 1
 # backup recipe
 # schedule via cron
 # where A2 stores internal backups
-default['ma']['backup']['internal']['dir'] = '/var/opt/chef-automate/backups'
-# where we want to write the backups to for
-default['ma']['backup']['external']['dir'] = '/tmp/backups'
-default['ma']['backup']['prefix'] = 'a2backup-'
+default['ma']['backup']['dir'] = '/var/opt/chef-automate/backups'
+# where we want to copy the backups
+default['ma']['backup']['export']['dir'] = nil
+default['ma']['backup']['export']['prefix'] = 'automate-backup-'
 # cron settings for scheduling backups
 default['ma']['backup']['cron']['minute'] = '30'
 default['ma']['backup']['cron']['hour'] = '2'
 default['ma']['backup']['cron']['day'] = '*'
+default['ma']['backup']['cron']['month'] = '*'
+default['ma']['backup']['cron']['weekday'] = '*'
