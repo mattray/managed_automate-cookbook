@@ -11,7 +11,7 @@ automate_airgap_install 'Install Chef Automate' do
   install_file node['ma']['install']['file']
   install_url node['ma']['install']['url']
   chef_automate node['ma']['chef-automate']
-  not_if { node['ma']['restore']['file'] || node['ma']['restore']['url'] }
+  only_if { node['ma']['restore']['file'].nil? && node['ma']['restore']['url'].nil? }
   action :install
 end
 
@@ -22,7 +22,7 @@ automate_airgap_install 'Restore Chef Automate' do
   restore_file node['ma']['restore']['file']
   restore_url node['ma']['restore']['url']
   chef_automate node['ma']['chef-automate']
-  only_if { node['ma']['restore']['file'] || node['ma']['restore']['url'] }
+  not_if { node['ma']['restore']['file'].nil? && node['ma']['restore']['url'].nil? }
   action :restore
 end
 

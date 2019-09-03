@@ -46,49 +46,56 @@ action :restore do
   restore_url = new_resource.restore_url
   fcp = Chef::Config[:file_cache_path]
 
-  # chef-automate status
-  # wait on this?
+  # is Automate already installed?
+  versions = shell_out("#{chef_automate} version").stdout.split
+  return unless versions[5].nil? # already installed, we're done here
 
-  # # is Automate already installed?
-  # versions = shell_out("#{chef_automate} version").stdout.split
-  # return unless versions[5].nil? # already installed, we're done here
+  restore_dir = fcp + '/automate-restore'
 
-  # # if the install file is not there download it
-  # if install_url && install_file.nil?
-  #   install_file = fcp + '/chef-automate.aib'
-  #   remote_file install_file do
-  #     source install_url
-  #   end
-  # end
+  directory restore_dir do
+    action :nothing
+  end.run_action(:create) # appears to remove filesystem race conditions
 
-  # let's restore
-    # if restore_url && restore_file.nil?
-    #   restore_file = fcp + '/chef-automate-restore
-    #   remote_file restore_file do
-    #     source restore_url
-    #     not_if { ::File.exist?(install_file) }
-    #   end
-    # end
-    #   restoredir = fcp + '/a2restore'
-    #   directory restoredir
-    #   log "RESTORE #{restorefile}" do
-    #     not_if { File.exist?(restoredir + '/backup-result.json') }
-    #   end
-    # unpack backup tarball if previous backup JSON doesn't exist
-    #   execute "tar -xzf #{restorefile}" do
-    #     command "tar -C #{restoredir} -xzf #{restorefile}"
-    #     action :run
-    #    not_if { File.exist?(restoredir + '/backup-result.json') }
-    #   end
-    #   ruby_block 'chef-automate restore' do
-    #     block do
-    #       backup = shell_out("ls -1 #{restoredir} | head -1").stdout.strip
-    #       puts "\nRestoring: #{backup}"
-    #       shell_out!("#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} -b #{restoredir} #{backup}")
-    #     end
-    #     action :nothing
-    #     subscribes :run, "execute[tar -xzf #{restorefile}]", :immediately
-    #   end
+  # if the install file is not there download it
+  if restore_url && restore_file.nil?
+    restore_file = fcp + '/chef-automate-restore.tgz'
+    remote_file restore_file do
+      source restore_url
+      action :nothing
+    end.run_action(:create) # appears to remove filesystem race conditions
+  end
+
+  # if the install file is not there download it
+  if install_url && install_file.nil?
+    install_file = fcp + '/chef-automate.aib'
+    remote_file install_file do
+      source install_url
+      action :nothing
+    end.run_action(:create) # appears to remove filesystem race conditions
+  end
+
+  # untar the backup
+  execute "untar restore file" do
+    cwd restore_dir
+    command "tar -C #{restore_dir} -xzf #{restore_file}"
+    action :nothing
+  end.run_action(:run) # appears to remove filesystem race conditions
+
+  #shell_out!("#{chef_automate} backup fix-repo-permissions #{restore_dir}")
+  execute "chef-automate backup fix-repo-permissions" do
+    cwd restore_dir
+    command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
+  end
+
+  # parse the backup-result.json
+  json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
+  backup = json['result']['backup_id']
+
+  # shell_out!("#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}")
+  execute "chef-automate backup restore" do
+    cwd restore_dir
+    command "#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}"
+  end
 end
 
 action :upgrade do
