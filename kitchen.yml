@@ -99,13 +99,13 @@ suites:
       product_version: 14
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/restore
   - name: 15restore
     provisioner:
       policyfile: policyfiles/restore.rb
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/restore
   - name: 14full
     provisioner:
       policyfile: policyfiles/everything.rb
