@@ -1,5 +1,5 @@
 #
-# Cookbook:: managed-automate2
+# Cookbook:: managed_automate
 # Recipe:: _elasticsearch
 #
 
@@ -9,7 +9,7 @@ elasticsearchconfig = Chef::Config[:file_cache_path] + '/elasticsearch_config.to
 # https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#_swapping_is_the_death_of_performance
 vm_swappiness = shell_out('sysctl -n vm.swappiness').stdout.strip.to_i
 sysctl_param 'vm.swappiness' do
-  value node['ma2']['sysctl']['vm.swappiness']
+  value node['ma']['sysctl']['vm.swappiness']
   not_if { vm_swappiness <= 1 }
 end
 

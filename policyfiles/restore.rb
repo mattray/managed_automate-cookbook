@@ -1,14 +1,7 @@
 name 'restore'
 
-run_list 'managed-automate2::default'
+include_policy 'default', path: './default.lock.json'
 
-default_source :supermarket
+run_list 'managed_automate::default'
 
-cookbook 'managed-automate2', path: '..'
-
-override['ma2']['aib']['dir'] = '/tmp/test'
-override['ma2']['aib']['url'] = 'file://localhost/tmp/test/automate-20181020020209.aib'
-override['ma2']['license']['url'] = 'file://localhost/tmp/test/a2.lic'
-
-override['ma2']['restore']['dir'] = '/tmp/test'
-override['ma2']['restore']['file'] = 'a2backup-20181105123003.tgz'
+override['ma']['restore']['url'] = 'file://localhost/tmp/test/automate-backup-20190902064704.tgz'

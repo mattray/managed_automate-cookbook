@@ -1,20 +1,17 @@
 # # encoding: utf-8
 
-# Inspec test for recipe managed-automate2::airgap_bundle
+# Inspec test for recipe managed_automate::airgap_bundle
 
-fcpchef = attribute('fcpchef', default: '/tmp/chef-automate')
-fcpfile = attribute('fcpfile', default: '/tmp/chef-automate-airgap.aib')
+fcpchef = attribute('fcpchef', default: '/root/chef-automate')
+fcpfile = attribute('fcpfile', default: '/root/chef-automate.aib')
 aibchef = attribute('aibchef', default: '/tmp/chef-automate')
-aibfile = attribute('aibfile', default: '/tmp/chef-automate-airgap.aib')
-
-describe package 'unzip' do
-  it { should be_installed }
-end
+aibfile = attribute('aibfile', default: '/tmp/chef-automate.aib')
 
 describe.one do
   describe file(aibchef) do
     it { should exist }
     it { should be_file }
+    its('mode') { should cmp '0755' }
   end
 
   describe file(fcpchef) do
