@@ -57,6 +57,10 @@ This file is used to list changes made in each version of the managed-automate2 
 - more resilient to nils
 - [https://github.com/mattray/managed-automate2-cookbook/issues/9](airgap_bundle safe for multiple runs)
 
+# 0.10.1
+
+- catch failures on defined paths with no files
+
 # BACKLOG
 - [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)

@@ -31,6 +31,11 @@ action :install do
     end.run_action(:create) # appears to remove filesystem race conditions
   end
 
+  unless ::File.exist?(install_file)
+    log "INSTALLATION FILE #{install_file} NOT FOUND, INSTALL SKIPPED"
+    return
+  end
+
   # install
   execute 'chef-automate deploy' do
     command "#{chef_automate} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{install_file}"
@@ -74,6 +79,11 @@ action :restore do
     end.run_action(:create) # appears to remove filesystem race conditions
   end
 
+  unless ::File.exist?(install_file) && ::File.exist?(restore_file)
+    log "INSTALLATION FILE #{install_file} OR RESTORE FILE #{restore_file} NOT FOUND, RESTORE SKIPPED"
+    return
+  end
+
   # untar the backup
   execute "untar restore file" do
     cwd restore_dir
@@ -87,11 +97,6 @@ action :restore do
     command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
   end
 
-  # parse the backup-result.json
-  json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
-  backup = json['result']['backup_id']
-
-  # shell_out!("#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}")
   execute "chef-automate backup restore" do
     cwd restore_dir
     command "#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}"
@@ -116,6 +121,11 @@ action :upgrade do
 
   # check the version of automate installed
   current_version = shell_out("#{chef_automate} version").stdout.split.last
+
+  unless ::File.exist?(upgrade_file)
+    log "UPGRADE FILE #{upgrade_file} NOT FOUND, UPGRADE SKIPPED"
+    return
+  end
 
   # check to see what version we're trying to upgrade to
   upgrade_version = shell_out("#{chef_automate} airgap bundle info #{upgrade_file}").stdout.split()[1]
