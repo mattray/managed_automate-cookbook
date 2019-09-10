@@ -46,6 +46,7 @@ The `.kitchen.yml` sets the VM to have the private IP `192.168.33.33`. If you wa
   1. Use `knife ssl fetch https://192.168.33.33` to pull the `default-centos-7.vagrantup.com.crt`.
   2. Install the certificate on your workstation. Under MacOS I used the Keychain Access application and did **File->Import Items** and selected the certificate. I then set the permissions to allow everything and deleted it when I destroyed the Vagrant machine.
   3. Connect to https://192.168.33.33 which will redirect to `default-centos-7.vagrantup.com` or one of the other suites. This works with Chrome, not Firefox.
+  4. If you're following the examples in https://automate.chef.io/docs/iam-v2-api-reference/ you can add `192.168.33.33 automate.example.com` to your `/etc/hosts`.
 
 You will probably need to update the license, directories and AIB files used for your testing. To use a license key, store it in your `policyfiles/default.rb` similar to this:
 
