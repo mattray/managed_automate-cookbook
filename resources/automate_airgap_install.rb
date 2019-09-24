@@ -85,19 +85,19 @@ action :restore do
   end
 
   # untar the backup
-  execute "untar restore file" do
+  execute 'untar restore file' do
     cwd restore_dir
     command "tar -C #{restore_dir} -xzf #{restore_file}"
     action :nothing
   end.run_action(:run) # appears to remove filesystem race conditions
 
-  #shell_out!("#{chef_automate} backup fix-repo-permissions #{restore_dir}")
-  execute "chef-automate backup fix-repo-permissions" do
+  # shell_out!("#{chef_automate} backup fix-repo-permissions #{restore_dir}")
+  execute 'chef-automate backup fix-repo-permissions' do
     cwd restore_dir
     command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
   end
 
-  execute "chef-automate backup restore" do
+  execute 'chef-automate backup restore' do
     cwd restore_dir
     command "#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}"
   end

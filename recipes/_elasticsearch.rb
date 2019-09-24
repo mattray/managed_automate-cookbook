@@ -15,7 +15,7 @@ end
 
 # assign heap size to 50% of available memory
 total_mem = node['memory']['total'][0..-3].to_i
-half_mem_megabytes = (total_mem/1024)/2
+half_mem_megabytes = (total_mem / 1024) / 2
 
 # Do not make your heap size > 32 GB.
 # https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#compressed_oops

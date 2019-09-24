@@ -32,7 +32,6 @@ path = \"#{backup_directory}\""
     subscribes :run, "file[#{backupconfig}]"
   end
 
-
   command = "#!/bin/sh
 cd #{backup_directory}
 /usr/bin/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1

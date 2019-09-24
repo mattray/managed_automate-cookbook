@@ -51,7 +51,7 @@ end
 describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
   it { should exist }
   it { should be_file }
-#  its('content') { should match(/heapsize = "2902m"/) }
+  #  its('content') { should match(/heapsize = "2902m"/) }
 end
 
 describe command('chef-automate') do
@@ -59,45 +59,45 @@ describe command('chef-automate') do
 end
 
 describe command('chef-automate status') do
-  its ('stdout') { should match /^applications-service    running        ok/ }
-  its ('stdout') { should match /^authn-service           running        ok/ }
-  its ('stdout') { should match /^authz-service           running        ok/ }
-  its ('stdout') { should match /^automate-dex            running        ok/ }
-  its ('stdout') { should match /^automate-elasticsearch  running        ok/ }
-  its ('stdout') { should match /^automate-es-gateway     running        ok/ }
-  its ('stdout') { should match /^automate-gateway        running        ok/ }
-  its ('stdout') { should match /^automate-load-balancer  running        ok/ }
-  its ('stdout') { should match /^automate-pg-gateway     running        ok/ }
-  its ('stdout') { should match /^automate-postgresql     running        ok/ }
-  its ('stdout') { should match /^automate-ui             running        ok/ }
-  its ('stdout') { should match /^backup-gateway          running        ok/ }
-  its ('stdout') { should match /^compliance-service      running        ok/ }
-  its ('stdout') { should match /^config-mgmt-service     running        ok/ }
-  its ('stdout') { should match /^data-feed-service       running        ok/ }
-  its ('stdout') { should match /^data-lifecycle-service  running        ok/ }
-  its ('stdout') { should match /^deployment-service      running        ok/ }
-  its ('stdout') { should match /^es-sidecar-service      running        ok/ }
-  its ('stdout') { should match /^event-feed-service      running        ok/ }
-  its ('stdout') { should match /^event-service           running        ok/ }
-  its ('stdout') { should match /^ingest-service          running        ok/ }
-  its ('stdout') { should match /^license-control-service running        ok/ }
-  its ('stdout') { should match /^local-user-service      running        ok/ }
-  its ('stdout') { should match /^nodemanager-service     running        ok/ }
-  its ('stdout') { should match /^notifications-service   running        ok/ }
-  its ('stdout') { should match /^pg-sidecar-service      running        ok/ }
-  its ('stdout') { should match /^secrets-service         running        ok/ }
-  its ('stdout') { should match /^session-service         running        ok/ }
-  its ('stdout') { should match /^teams-service           running        ok/ }
+  its('stdout') { should match /^applications-service    running        ok/ }
+  its('stdout') { should match /^authn-service           running        ok/ }
+  its('stdout') { should match /^authz-service           running        ok/ }
+  its('stdout') { should match /^automate-dex            running        ok/ }
+  its('stdout') { should match /^automate-elasticsearch  running        ok/ }
+  its('stdout') { should match /^automate-es-gateway     running        ok/ }
+  its('stdout') { should match /^automate-gateway        running        ok/ }
+  its('stdout') { should match /^automate-load-balancer  running        ok/ }
+  its('stdout') { should match /^automate-pg-gateway     running        ok/ }
+  its('stdout') { should match /^automate-postgresql     running        ok/ }
+  its('stdout') { should match /^automate-ui             running        ok/ }
+  its('stdout') { should match /^backup-gateway          running        ok/ }
+  its('stdout') { should match /^compliance-service      running        ok/ }
+  its('stdout') { should match /^config-mgmt-service     running        ok/ }
+  its('stdout') { should match /^data-feed-service       running        ok/ }
+  its('stdout') { should match /^data-lifecycle-service  running        ok/ }
+  its('stdout') { should match /^deployment-service      running        ok/ }
+  its('stdout') { should match /^es-sidecar-service      running        ok/ }
+  its('stdout') { should match /^event-feed-service      running        ok/ }
+  its('stdout') { should match /^event-service           running        ok/ }
+  its('stdout') { should match /^ingest-service          running        ok/ }
+  its('stdout') { should match /^license-control-service running        ok/ }
+  its('stdout') { should match /^local-user-service      running        ok/ }
+  its('stdout') { should match /^nodemanager-service     running        ok/ }
+  its('stdout') { should match /^notifications-service   running        ok/ }
+  its('stdout') { should match /^pg-sidecar-service      running        ok/ }
+  its('stdout') { should match /^secrets-service         running        ok/ }
+  its('stdout') { should match /^session-service         running        ok/ }
+  its('stdout') { should match /^teams-service           running        ok/ }
 end
 
 describe command('chef-automate license status') do
-  its ('stdout') { should match /^Licensed to:/ }
-  its ('stdout') { should match /^License ID:/ }
-  its ('stdout') { should match /^Expiration Date:/ }
+  its('stdout') { should match /^Licensed to:/ }
+  its('stdout') { should match /^License ID:/ }
+  its('stdout') { should match /^Expiration Date:/ }
 end
 
 describe command('chef-automate config show') do
-  its ('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
-  its ('stdout') { should match /deployment_type = \"local\"$/ }
-#  its ('stdout') { should match /heapsize = \"2902m\"$/ }
+  its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
+  its('stdout') { should match /deployment_type = \"local\"$/ }
+  #  its('stdout') { should match /heapsize = \"2902m\"$/ }
 end

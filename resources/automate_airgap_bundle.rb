@@ -15,7 +15,7 @@ action :download do
 
   # find the filename from
   # Success: Your Automate Install Bundle has been written to automate-20190813170406.aib.
-  airgap_filename = shell_out(command, :cwd => fcp).stdout[/automate-\d{14}.aib/]
+  airgap_filename = shell_out(command, cwd: fcp).stdout[/automate-\d{14}.aib/]
 
   destination_filename = airgap_filename unless destination_filename
 
