@@ -61,6 +61,12 @@ This file is used to list changes made in each version of the managed-automate2 
 
 - catch failures on defined paths with no files
 
+# 0.10.2
+
+- changed automate_backup resource with following
+  - used backup_directory variable instead of fcp for creating backup script and cron
+  - fixed file resource issue
+
 # BACKLOG
 - [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)
