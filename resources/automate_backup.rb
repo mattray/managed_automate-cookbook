@@ -21,8 +21,7 @@ action :schedule do
   backupconfig = fcp + '/backup_config.toml'
 
   file backupconfig do
-    content
-    "[global.v1.backups.filesystem]
+    content "[global.v1.backups.filesystem]
 path = \"#{backup_directory}\""
   end
 
@@ -47,18 +46,19 @@ cd #{backup_directory}
 
     command += "backup_id=`sed 's/.*backup_id\":\"\\([0-9]*\\).*/\\1/g' backup-result.json`
 tar -czf #{export_directory}/#{export_prefix}${backup_id}.tgz backup-result.json automate-elasticsearch-data $backup_id
+rm -rf $backup_id
 "
   end
 
   # Schedule regular backups & copy via cron
-  file fcp + '/automate-backup.sh' do
+  file backup_directory + '/automate-backup.sh' do
     mode '0700'
     content command
   end
 
   # schedule backup on a recurring cron job. Override attributes as necessary
   cron 'chef-automate backup create' do
-    command fcp + '/automate-backup.sh'
+    command backup_directory + '/automate-backup.sh'
     minute new_resource.minute
     hour new_resource.hour
     day new_resource.day
