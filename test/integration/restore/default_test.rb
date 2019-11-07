@@ -59,10 +59,10 @@ describe command('chef-automate status') do
   its('stdout') { should match /^automate-postgresql     running        ok/ }
   its('stdout') { should match /^automate-ui             running        ok/ }
   its('stdout') { should match /^backup-gateway          running        ok/ }
+  its('stdout') { should match /^cereal-service          running        ok/ }
   its('stdout') { should match /^compliance-service      running        ok/ }
   its('stdout') { should match /^config-mgmt-service     running        ok/ }
   its('stdout') { should match /^data-feed-service       running        ok/ }
-  its('stdout') { should match /^data-lifecycle-service  running        ok/ }
   its('stdout') { should match /^deployment-service      running        ok/ }
   its('stdout') { should match /^es-sidecar-service      running        ok/ }
   its('stdout') { should match /^event-feed-service      running        ok/ }
@@ -87,5 +87,14 @@ end
 describe command('chef-automate config show') do
   its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
   its('stdout') { should match /deployment_type = \"local\"$/ }
-  #  its('stdout') { should match /heapsize = \"2902m\"$/ }
+  its('stdout') { should match /heapsize = \"2902m\"$/ }
+end
+
+describe command('chef-automate version') do
+  its('stdout') { should match /^CLI Build: 20191024134947$/ }
+  its('stdout') { should match /^Server Build: 20191024135531$/ }
+end
+
+describe command('curl --insecure -H "api-token: bDXBofwGPcQmeNQ4EUwbZWeUpaE=" https://localhost/api/v0/compliance/reporting/export -d \'{"type":"csv"}\'') do
+  its('stdout') { should match /^127.0.0.1,2019-11-07T05:34:49Z,centos,7.7.1908,unknown,127.0.0.1,,linux-patch-baseline,DevSec Linux Patch Benchmark,0.4.0,Verifies that all patches have been applied,patches,All operating system package updates are installed,0.30,failed/ }
 end

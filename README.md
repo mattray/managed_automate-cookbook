@@ -6,11 +6,30 @@ Deploys and configures the Chef Automate 2 server in an airgapped, stateless mod
 
 ## default ##
 
-Installs, restores, or upgrades Chef Automate on a single air-gapped box in a new deployment. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The AIB, restore, and upgrade files may be URLs or files, similar to this:
+Calls the install recipe.
+
+## install ##
+
+Installs Chef Automate on a single air-gapped box in a new deployment. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The AIB file may be a URL or file, similar to this:
 
     node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
-    node['ma']['upgrade']['url'] = 'file://localhost/tmp/test/automate-20190820163418.aib'
+
+The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.
+
+## restore ##
+
+Restores Chef Automate on a single air-gapped box in a new deployment from a previous backup. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The AIB and restore files may be URLs or files, similar to this:
+
+    node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
     node['ma']['restore']['file'] = '/tmp/test/automate-backup-20190902064704.tgz'
+
+The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.
+
+## upgrade ##
+
+Upgrades Chef Automate on a single air-gapped box from an existing deployment. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The upgrade file may be a URL or file, similar to this:
+
+    node['ma']['upgrade']['url'] = 'file://localhost/tmp/test/automate-20190820163418.aib'
 
 The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.
 

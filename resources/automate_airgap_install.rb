@@ -55,9 +55,10 @@ action :restore do
   versions = shell_out("#{chef_automate} version").stdout.split
   return unless versions[5].nil? # already installed, we're done here
 
-  restore_dir = fcp + '/automate-restore'
+  restore_dir = node['ma']['backup']['dir']
 
   directory restore_dir do
+    recursive true
     action :nothing
   end.run_action(:create) # appears to remove filesystem race conditions
 
@@ -91,52 +92,16 @@ action :restore do
     action :nothing
   end.run_action(:run) # appears to remove filesystem race conditions
 
-  # shell_out!("#{chef_automate} backup fix-repo-permissions #{restore_dir}")
   execute 'chef-automate backup fix-repo-permissions' do
     cwd restore_dir
     command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
   end
 
+  json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
+  backup_id = json['result']['backup_id']
+
   execute 'chef-automate backup restore' do
     cwd restore_dir
-    command "#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}"
-  end
-end
-
-action :upgrade do
-  chef_automate = new_resource.chef_automate
-  upgrade_file = new_resource.install_file
-  upgrade_url = new_resource.install_url
-  fcp = Chef::Config[:file_cache_path]
-
-  # if the upgrade file is not there download it
-  if upgrade_url && upgrade_file.nil?
-    upgrade_file = fcp + '/chef-automate-upgrade.aib'
-    remote_file upgrade_file do
-      show_progress true
-      source upgrade_url
-      action :nothing
-    end.run_action(:create) # appears to remove filesystem race conditions
-  end
-
-  # check the version of automate installed
-  current_version = shell_out("#{chef_automate} version").stdout.split.last
-
-  unless ::File.exist?(upgrade_file)
-    log "UPGRADE FILE #{upgrade_file} NOT FOUND, UPGRADE SKIPPED"
-    return
-  end
-
-  # check to see what version we're trying to upgrade to
-  upgrade_version = shell_out("#{chef_automate} airgap bundle info #{upgrade_file}").stdout.split()[1]
-
-  return unless upgrade_version > current_version
-
-  # upgrade without a current version? Because a nil current_version is < upgrade_version
-  log "UPGRADE #{current_version} to #{upgrade_version}"
-
-  execute 'chef-automate upgrade run' do
-    command "#{chef_automate} upgrade run --airgap-bundle #{upgrade_file}"
-    cwd fcp
+    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id}"
   end
 end
