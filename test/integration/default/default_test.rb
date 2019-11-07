@@ -71,10 +71,10 @@ describe command('chef-automate status') do
   its('stdout') { should match /^automate-postgresql     running        ok/ }
   its('stdout') { should match /^automate-ui             running        ok/ }
   its('stdout') { should match /^backup-gateway          running        ok/ }
+  its('stdout') { should match /^cereal-service          running        ok/ }
   its('stdout') { should match /^compliance-service      running        ok/ }
   its('stdout') { should match /^config-mgmt-service     running        ok/ }
   its('stdout') { should match /^data-feed-service       running        ok/ }
-  its('stdout') { should match /^data-lifecycle-service  running        ok/ }
   its('stdout') { should match /^deployment-service      running        ok/ }
   its('stdout') { should match /^es-sidecar-service      running        ok/ }
   its('stdout') { should match /^event-feed-service      running        ok/ }
