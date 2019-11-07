@@ -55,9 +55,10 @@ action :restore do
   versions = shell_out("#{chef_automate} version").stdout.split
   return unless versions[5].nil? # already installed, we're done here
 
-  restore_dir = fcp + '/automate-restore'
+  restore_dir = node['ma']['backup']['dir']
 
   directory restore_dir do
+    recursive true
     action :nothing
   end.run_action(:create) # appears to remove filesystem race conditions
 
@@ -91,14 +92,16 @@ action :restore do
     action :nothing
   end.run_action(:run) # appears to remove filesystem race conditions
 
-  # shell_out!("#{chef_automate} backup fix-repo-permissions #{restore_dir}")
   execute 'chef-automate backup fix-repo-permissions' do
     cwd restore_dir
     command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
   end
 
+  json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
+  backup_id = json['result']['backup_id']
+
   execute 'chef-automate backup restore' do
     cwd restore_dir
-    command "#{chef_automate} backup restore --backup-dir #{restore_dir} --skip-preflight --airgap-bundle #{install_file}"
+    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id}"
   end
 end

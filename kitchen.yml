@@ -71,13 +71,13 @@ suites:
       product_version: 14
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/upgrade
   - name: 15upgrade
     provisioner:
       policyfile: policyfiles/upgrade.rb
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/upgrade
   - name: 14backup
     provisioner:
       policyfile: policyfiles/backup.rb

@@ -67,6 +67,21 @@ This file is used to list changes made in each version of the managed-automate2 
   - used backup_directory variable instead of fcp for creating backup script and cron
   - fixed file resource issue
 
+# 0.11.0
+
+- refactor default recipe into separate install, upgrade, and restore recipes
+- move upgrade action from automate_airgap_install into new automate_airgap_upgrade custom resource
+- fix broken backup and restore resources
+- API tests to ensure working restores
+
 # BACKLOG
 - [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)
+- download Automate by version
+here are all the versions: https://packages.chef.io/manifests/current/automate/versions.json
+And you can get a specific version's manifest by replacing latest in the first link with the build number
+e.g. https://packages.chef.io/manifests/current/automate/20191015190829.json
+Process for creating a bundle:
+• download that file to manifest.json
+• run chef-automate airgap bundle create -m manifest.json
+• that outputs a file and prints the instructions
