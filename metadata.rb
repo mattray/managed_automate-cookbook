@@ -3,9 +3,8 @@ maintainer 'Matt Ray'
 maintainer_email 'matt@chef.io'
 license 'Apache-2.0'
 description 'Installs and configures a Chef Automate 2 server'
-long_description 'Installs and configures a Chef Automate 2 server'
-version '0.11.1'
-chef_version '>= 14' if respond_to?(:chef_version)
+version '0.11.2'
+chef_version '>= 14'
 
 supports 'redhat'
 supports 'centos'

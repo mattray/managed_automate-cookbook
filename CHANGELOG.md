@@ -78,6 +78,10 @@ This file is used to list changes made in each version of the managed-automate2 
 
 - [https://github.com/mattray/managed_automate-cookbook/issues/18](include the automate-credentials.toml in the backups)
 
+# 0.11.2
+
+- Cookstyle automated cleanups
+
 # BACKLOG
 - [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)
