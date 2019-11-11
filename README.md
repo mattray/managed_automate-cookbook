@@ -39,7 +39,7 @@ This recipe requires internet access and is used to download the `chef-automate`
 
 ## backup
 
-Runs `chef-automate backup` via cron and copies tarballs of the backups to a destination directory. The default is 2:30am daily, but you may change the cron schedule via the following attributes.
+Runs `chef-automate backup` via cron and copies tarballs of the backups to a destination directory. The default is 2:30am daily, but you may change the cron schedule via the following attributes. The `automate-credentials.toml` from the initial install or restored backup is included in the backup if available.
 
     node['ma']['backup']['cron']['minute'] = '30'
     node['ma']['backup']['cron']['hour'] = '2'

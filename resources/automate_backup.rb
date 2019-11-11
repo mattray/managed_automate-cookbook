@@ -43,8 +43,17 @@ cd #{backup_directory}
 
     directory export_directory
 
+    # credentials from the original location or from a restored backup
+    if ::File.exists?(fcp + '/automate-credentials.toml')
+      tar = "tar -czf #{export_directory}/#{export_prefix}${backup_id}.tgz backup-result.json automate-elasticsearch-data $backup_id -C #{fcp} automate-credentials.toml"
+    elsif ::File.exists?(backup_directory + '/automate-credentials.toml')
+      tar = "tar -czf #{export_directory}/#{export_prefix}${backup_id}.tgz backup-result.json automate-elasticsearch-data $backup_id -C #{backup_directory} automate-credentials.toml"
+    else
+      tar = "tar -czf #{export_directory}/#{export_prefix}${backup_id}.tgz backup-result.json automate-elasticsearch-data $backup_id"
+    end
+
     command += "backup_id=`sed 's/.*backup_id\":\"\\([0-9]*\\).*/\\1/g' backup-result.json`
-tar -czf #{export_directory}/#{export_prefix}${backup_id}.tgz backup-result.json automate-elasticsearch-data $backup_id
+#{tar}
 rm -rf $backup_id
 "
   end

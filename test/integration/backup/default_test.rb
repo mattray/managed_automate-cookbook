@@ -15,6 +15,11 @@ end
 describe file('/var/opt/chef-automate/backups/automate-backup.sh') do
   it { should exist }
   it { should be_executable }
+  its('content') { should match(/^#!\/bin\/sh$/) }
+  its('content') { should match(/^cd \/var\/opt\/chef-automate\/backups$/) }
+  its('content') { should match(/^\/usr\/bin\/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1$/) }
+  its('content') { should match(/^tar -czf \/tmp\/test\/backups\/automate-backup-\${backup_id}.tgz backup-result.json automate-elasticsearch-data \$backup_id -C \/tmp\/kitchen\/cache automate-credentials.toml$/) }
+  its('content') { should match(/^rm -rf \$backup_id$/) }
 end
 
 # add crontab entry for cron[chef-automate backup create]
