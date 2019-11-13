@@ -82,8 +82,11 @@ This file is used to list changes made in each version of the managed-automate2 
 
 - Cookstyle automated cleanups
 
-# BACKLOG
+# 0.11.3
+
 - [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
+
+# BACKLOG
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)
 - download Automate by version
 here are all the versions: https://packages.chef.io/manifests/current/automate/versions.json
