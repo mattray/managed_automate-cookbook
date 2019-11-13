@@ -40,4 +40,22 @@ action :upgrade do
     command "#{chef_automate} upgrade run --airgap-bundle #{upgrade_file}"
     cwd fcp
   end
+
+  ruby_block "Wait for Automate upgrade completion to #{upgrade_version}" do
+    block do
+      puts
+      wait = 0
+      while wait < 10 # upgrade completed or time out after 5 minutes
+        if shell_out("#{chef_automate} upgrade status").stdout.match?('upgrading')
+          wait += 1
+        else
+          wait = 10
+        end
+        shell_out('sleep 30') # needed even after last check
+        puts "UPGRADE in progress to #{upgrade_version}:#{wait}/10"
+      end
+    end
+    action :nothing
+    subscribes :run, 'execute[chef-automate upgrade run]', :immediately
+  end
 end
