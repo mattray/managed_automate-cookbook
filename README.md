@@ -14,7 +14,9 @@ Installs Chef Automate on a single air-gapped box in a new deployment. Download 
 
     node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
 
-The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.
+The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute. If you wish to skip the preflight-check but still attempt to configure the machine with the recommended settings (and ignore failures), set
+
+    node['ma']['preflight-check'] = false
 
 ## restore ##
 
@@ -47,7 +49,7 @@ Runs `chef-automate backup` via cron and copies tarballs of the backups to a des
 
 # Testing with Test Kitchen
 
-The included `kitchen.yml` provides testing scenarios for the following (the 14/15 prefixes indicate which Chef client version is used):
+The included `kitchen.yml` provides testing scenarios for the following (the 15/16 prefixes indicate which Chef client version is used):
 
   * `aib-download`: creates an airgap bundle for installing Automate offline. It writes `chef-automate` and the `.aib` files to the shared `test` directory.
   * `aib-filename`: creates an airgap bundle for installing Automate offline with a given name set via the `node['ma']['aib']['file']` attribute. It writes `chef-automate` and the `.aib` files to the shared `test` directory.

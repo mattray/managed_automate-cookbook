@@ -36,6 +36,7 @@ default['ma']['license']['file'] = nil
 default['ma']['license']['string'] = nil
 default['ma']['license']['url'] = nil
 
+default['ma']['preflight-check'] = true
 # sysctl settings to apply to make the preflight-check pass
 default['ma']['sysctl']['fs.file-max'] = 64000
 default['ma']['sysctl']['vm.max_map_count'] = 262144

@@ -53,13 +53,13 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: 15url
-    provisioner:
-      policyfile: policyfiles/url.rb
-      product_version: 15
+  - name: 16nopreflight
+    attributes:
+      ma:
+        preflight-check: false
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/nopreflight
   - name: 16url
     provisioner:
       policyfile: policyfiles/url.rb
@@ -79,14 +79,6 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/upgrade
-  - name: 15backup
-    provisioner:
-      policyfile: policyfiles/backup.rb
-      product_version: 15
-    verifier:
-      inspec_tests:
-        - test/integration/default
-        - test/integration/backup
   - name: 16backup
     provisioner:
       policyfile: policyfiles/backup.rb

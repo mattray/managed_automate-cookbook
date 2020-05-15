@@ -86,6 +86,11 @@ This file is used to list changes made in each version of the managed-automate2 
 
 - [https://github.com/mattray/managed-automate2-cookbook/issues/8](wait for completion of upgrade before proceeding)
 
+# 0.12.0
+
+- test with Chef 16, remove Chef 14 support
+- add the ability to skip the preflight-check while still attempting to configure to pass (but ignoring failures)
+
 # BACKLOG
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)
 - download Automate by version
