@@ -15,10 +15,11 @@ provisioner:
   always_update_cookbooks: true
   chef_license: accept
   product_name: chef
-  product_version: 15
+  product_version: 16
 
 verifier:
   name: inspec
+  color: false
 
 platforms:
   - name: centos-7
@@ -42,79 +43,79 @@ suites:
         fcpfile: /tmp/kitchen/cache/chef-automate.aib
         aibchef: /tmp/test/chef-automate
         aibfile: /tmp/test/chef-automate.aib
-  - name: 14default
-    provisioner:
-      product_version: 14
-    verifier:
-      inspec_tests:
-        - test/integration/default
   - name: 15default
+    provisioner:
+      product_version: 15
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: 14url
-    provisioner:
-      policyfile: policyfiles/url.rb
-      product_version: 14
+  - name: 16default
     verifier:
       inspec_tests:
         - test/integration/default
   - name: 15url
     provisioner:
       policyfile: policyfiles/url.rb
+      product_version: 15
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: 14upgrade
+  - name: 16url
     provisioner:
-      policyfile: policyfiles/upgrade.rb
-      product_version: 14
+      policyfile: policyfiles/url.rb
     verifier:
       inspec_tests:
-        - test/integration/upgrade
+        - test/integration/default
   - name: 15upgrade
     provisioner:
       policyfile: policyfiles/upgrade.rb
+      product_version: 15
     verifier:
       inspec_tests:
         - test/integration/upgrade
-  - name: 14backup
+  - name: 16upgrade
     provisioner:
-      policyfile: policyfiles/backup.rb
-      product_version: 14
+      policyfile: policyfiles/upgrade.rb
     verifier:
       inspec_tests:
-        - test/integration/default
-        - test/integration/backup
+        - test/integration/upgrade
   - name: 15backup
     provisioner:
       policyfile: policyfiles/backup.rb
+      product_version: 15
     verifier:
       inspec_tests:
         - test/integration/default
         - test/integration/backup
-  - name: 14restore
+  - name: 16backup
     provisioner:
-      policyfile: policyfiles/restore.rb
-      product_version: 14
+      policyfile: policyfiles/backup.rb
     verifier:
       inspec_tests:
-        - test/integration/restore
+        - test/integration/default
+        - test/integration/backup
   - name: 15restore
     provisioner:
       policyfile: policyfiles/restore.rb
+      product_version: 15
     verifier:
       inspec_tests:
         - test/integration/restore
-  - name: 14full
+  - name: 16restore
+    provisioner:
+      policyfile: policyfiles/restore.rb
+    verifier:
+      inspec_tests:
+        - test/integration/restore
+  - name: 15full
     provisioner:
       policyfile: policyfiles/everything.rb
-      product_version: 14
+      product_version: 15
     verifier:
       inspec_tests:
         - test/integration/default
         - test/integration/backup
-  - name: 15full
+  - name: 16full
     provisioner:
       policyfile: policyfiles/everything.rb
     verifier:
