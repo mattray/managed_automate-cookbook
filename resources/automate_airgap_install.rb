@@ -1,4 +1,5 @@
 resource_name :automate_airgap_install
+provides :automate_airgap_install
 
 property :install_file, String
 property :install_url, String
@@ -102,6 +103,7 @@ action :restore do
 
   execute 'chef-automate backup restore' do
     cwd restore_dir
+    timeout 7200 # there appears to be a 2 hour timed out with large restores
     command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id}"
   end
 end

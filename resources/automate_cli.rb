@@ -1,4 +1,5 @@
 resource_name :automate_cli
+provides :automate_cli
 
 property :chef_automate, String
 

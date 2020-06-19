@@ -1,4 +1,5 @@
 resource_name :automate_airgap_bundle
+provides :automate_airgap_bundle
 
 property :directory, String, name_property: true
 property :chef_automate, String, required: true
