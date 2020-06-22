@@ -1,4 +1,5 @@
 resource_name :automate_backup
+provides :automate_backup
 
 property :backup_directory, String, default: '/var/opt/chef-automate/backups'
 property :export_directory, String

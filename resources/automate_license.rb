@@ -1,4 +1,5 @@
 resource_name :automate_license
+provides :automate_license
 
 property :file, String
 property :string, String

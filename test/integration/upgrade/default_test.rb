@@ -103,5 +103,5 @@ describe command('chef-automate config show') do
 end
 
 describe command('chef-automate version') do
-  its('stdout') { should match /^Server Build: 20191030224959$/ }
+  its('stdout') { should match /Server Build: 20200610173731$/ }
 end

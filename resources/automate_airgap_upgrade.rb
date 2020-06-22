@@ -1,4 +1,5 @@
 resource_name :automate_airgap_upgrade
+provides :automate_airgap_upgrade
 
 property :upgrade_file, String
 property :upgrade_url, String
