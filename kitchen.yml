@@ -11,7 +11,6 @@ driver:
 
 provisioner:
   name: chef_zero
-  policyfile: policyfiles/default.rb
   always_update_cookbooks: true
   chef_license: accept
   product_name: chef
@@ -27,10 +26,10 @@ platforms:
 suites:
   - name: aib_download
     provisioner:
-      policyfile: policyfiles/airgap.rb
+      named_run_list: airgap
   - name: aib_filename
     provisioner:
-      policyfile: policyfiles/airgap.rb
+      named_run_list: airgap
     attributes:
       ma:
         aib:
@@ -60,61 +59,101 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/nopreflight
-  - name: 16url
-    provisioner:
-      policyfile: policyfiles/url.rb
-    verifier:
-      inspec_tests:
-        - test/integration/default
   - name: 15upgrade
     provisioner:
-      policyfile: policyfiles/upgrade.rb
+      named_run_list: upgrade
       product_version: 15
+    attributes:
+      ma:
+        install:
+          file: /tmp/test/automate-20200603114954.aib
+        upgrade:
+          url: file://localhost/tmp/test/automate-20200610173731.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
   - name: 16upgrade
     provisioner:
-      policyfile: policyfiles/upgrade.rb
+      named_run_list: upgrade
+    attributes:
+      ma:
+        install:
+          file: /tmp/test/automate-20200603114954.aib
+        upgrade:
+          url: file://localhost/tmp/test/automate-20200610173731.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
   - name: 16backup
     provisioner:
-      policyfile: policyfiles/backup.rb
+      named_run_list: backup
     verifier:
       inspec_tests:
         - test/integration/default
         - test/integration/backup
   - name: 15restore
     provisioner:
-      policyfile: policyfiles/restore.rb
+      named_run_list: restore
       product_version: 15
+    attributes:
+      ma:
+        install:
+          file: /tmp/test/automate-20200603114954.aib
+        restore:
+          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
     verifier:
       inspec_tests:
         - test/integration/restore
   - name: 16restore
     provisioner:
-      policyfile: policyfiles/restore.rb
+      named_run_list: restore
+    attributes:
+      ma:
+        install:
+          file: /tmp/test/automate-20200603114954.aib
+        restore:
+          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
     verifier:
       inspec_tests:
         - test/integration/restore
-  - name: 15full
+  - name: 15everything
     provisioner:
-      policyfile: policyfiles/everything.rb
+      named_run_list: everything
       product_version: 15
+    attributes:
+      ma:
+        backup:
+          internal:
+            dir: /tmp/A2backups
+        install:
+          file: /tmp/test/automate-20200603114954.aib
+        restore:
+          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
+        upgrade:
+          file: chef-automate.aib
     verifier:
       inspec_tests:
         - test/integration/default
         - test/integration/backup
-  - name: 16full
+  - name: 16everything
     provisioner:
-      policyfile: policyfiles/everything.rb
+      named_run_list: everything
     verifier:
       inspec_tests:
         - test/integration/aib
         - test/integration/default
         - test/integration/backup
+    attributes:
+      ma:
+        backup:
+          internal:
+            dir: /tmp/A2backups
+        install:
+          file: /tmp/test/automate-20200603114954.aib
+        restore:
+          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
+        upgrade:
+          file: chef-automate.aib
       attributes:
         fcpchef: /tmp/kitchen/cache/chef-automate
         fcpfile: /tmp/kitchen/cache/chef-automate-airgap.aib
