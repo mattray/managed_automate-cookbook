@@ -55,7 +55,7 @@ This file is used to list changes made in each version of the managed-automate2 
 
 # 0.11.0
 - refactor default recipe into separate install, upgrade, and restore recipes
-- move upgrade action from automate_airgap_install into new automate_airgap_upgrade custom resource
+- move upgrade action from `automate_airgap_install` into new `automate_airgap_upgrade` custom resource
 - fix broken backup and restore resources
 - API tests to ensure working restores
 
@@ -76,6 +76,10 @@ This file is used to list changes made in each version of the managed-automate2 
 - extended restore timeout
 - updated custom resources to account for [breaking Custom Resource change in Chef 16.2](https://discourse.chef.io/t/chef-infra-client-16-2-released/17284)
 - refactor policyfiles into single Policyfile.rb with named run lists for testing
+
+# 0.12.2
+- add testing with Ubuntu 18.04
+- add a wait for `chef-automate start` in the `automate_install_install` and `automate_install_upgrade` custom resources
 
 # BACKLOG
 - Chef 16: clean up end.run_action https://docs.chef.io/release_notes/#compile_time-on-all-resources
