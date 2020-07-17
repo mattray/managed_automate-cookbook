@@ -14,8 +14,11 @@ action :install do
   fcp = Chef::Config[:file_cache_path]
 
   # is Automate already installed?
-  versions = shell_out("#{chef_automate} version").stdout.split
-  return unless versions[5].nil? # already installed, we're done here
+  if ::File.exist?('/bin/chef-automate')
+    # we need to make sure automate is running at this point
+    start_automate(chef_automate, 'INSTALL:INSTALLED')
+    return
+  end
 
   # create default configuration
   execute "#{chef_automate} init-config --upgrade-strategy none" do
@@ -42,6 +45,8 @@ action :install do
     command "#{chef_automate} deploy config.toml --accept-terms-and-mlsa --skip-preflight --airgap-bundle #{install_file}"
     cwd fcp
   end
+
+  start_automate(chef_automate, 'INSTALL:INSTALLING')
 end
 
 action :restore do
@@ -53,8 +58,11 @@ action :restore do
   fcp = Chef::Config[:file_cache_path]
 
   # is Automate already installed?
-  versions = shell_out("#{chef_automate} version").stdout.split
-  return unless versions[5].nil? # already installed, we're done here
+  if ::File.exist?('/bin/chef-automate')
+    # we need to make sure automate is running at this point
+    start_automate(chef_automate, 'RESTORE:INSTALLED')
+    return
+  end
 
   restore_dir = node['ma']['backup']['dir']
 
@@ -105,5 +113,30 @@ action :restore do
     cwd restore_dir
     timeout 7200 # there appears to be a 2 hour timed out with large restores
     command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id}"
+  end
+
+  start_automate(chef_automate, 'RESTORE:RESTORING')
+end
+
+action_class do
+  def start_automate(chef_automate, reason)
+    shell_out("#{chef_automate} start")
+    ruby_block "Ensure Automate started:#{reason}" do
+      block do
+        puts
+        wait = 0
+        while wait < 10
+          if shell_out("#{chef_automate} status").stdout.match?('DOWN')
+            wait += 1
+          else
+            wait = 10
+          end
+          shell_out('sleep 30') # needed even after last check
+          puts "START in progress:#{wait}/10"
+        end
+      end
+      action :run
+      not_if "#{chef_automate} status"
+    end
   end
 end
