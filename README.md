@@ -49,20 +49,19 @@ Runs `chef-automate backup` via cron and copies tarballs of the backups to a des
 
 # Testing with Test Kitchen
 
-The included `kitchen.yml` provides testing scenarios for the following (the 15/16 prefixes indicate which Chef client version is used):
+The included `kitchen.yml` provides testing scenarios for the following (the 15/16 prefixes indicate which Chef client version is used and most tests are run on CentOS and Ubuntu):
 
-  * `aib-download`: creates an airgap bundle for installing Automate offline. It writes `chef-automate` and the `.aib` files to the shared `test` directory.
-  * `aib-filename`: creates an airgap bundle for installing Automate offline with a given name set via the `node['ma']['aib']['file']` attribute. It writes `chef-automate` and the `.aib` files to the shared `test` directory.
+  * `aib_download`: creates the latest airgap bundle for installing Automate offline. It writes `chef-automate` and the `.aib` files to the shared `test` directory.
+  * `aib_filename`: creates an airgap bundle for installing Automate offline with a given name set via the `node['ma']['aib']['file']` attribute. It writes `chef-automate` and the `.aib` files to the shared `test` directory.
   * `default`: tests installing from a previously downloaded `chef-automate` and `.aib` file. Use the `aib-download` suite to create this if necessary to the shared `test` directory.
-  * `url`: tests installing from a previously downloaded `.aib` and license via URLs.
   * `upgrade`: tests installing and upgrading an installation.
   * `backup`: install and configure backups.
   * `restore`: restore an installation from a backup .tgz and an installation `.aib` file.
-  * `full`: performs both the airgap bundle creation, restore and scheduling of backups.
+  * `everything`: performs both the airgap bundle creation, restore, upgrade, and scheduling of backups.
 
-## .kitchen.yml ##
+## kitchen.yml ##
 
-The `.kitchen.yml` sets the VM to have the private IP `192.168.33.33`. If you want to use the Automate web UI, you will need to get the self-signed certificate created with the installation
+The [kitchen.yml](kitchen.yml) sets the VM to have the private IP `192.168.33.33` and allocates 6 gigabytes of RAM for testing. If you want to use the Automate web UI, you will need to get the self-signed certificate created with the installation
 
   1. Use `knife ssl fetch https://192.168.33.33` to pull the `default-centos-7.vagrantup.com.crt`.
   2. Install the certificate on your workstation. Under MacOS I used the Keychain Access application and did **File->Import Items** and selected the certificate. I then set the permissions to allow everything and deleted it when I destroyed the Vagrant machine.
