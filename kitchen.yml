@@ -22,12 +22,15 @@ verifier:
 
 platforms:
   - name: centos-7
+  - name: ubuntu-18.04
 
 suites:
   - name: aib_download
+    excludes: ["ubuntu-18.04"]
     provisioner:
       named_run_list: airgap
   - name: aib_filename
+    excludes: ["ubuntu-18.04"]
     provisioner:
       named_run_list: airgap
     attributes:
@@ -68,7 +71,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         upgrade:
-          url: file://localhost/tmp/test/automate-20200610173731.aib
+          url: file://localhost/tmp/test/automate-20200707173044.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
@@ -80,11 +83,12 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         upgrade:
-          url: file://localhost/tmp/test/automate-20200610173731.aib
+          url: file://localhost/tmp/test/automate-20200707173044.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
   - name: 16backup
+    excludes: ["ubuntu-18.04"]
     provisioner:
       named_run_list: backup
     verifier:
@@ -98,9 +102,9 @@ suites:
     attributes:
       ma:
         install:
-          file: /tmp/test/automate-20200603114954.aib
+          file: /tmp/test/automate-20200707173044.aib
         restore:
-          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
+          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
     verifier:
       inspec_tests:
         - test/integration/restore
@@ -110,9 +114,9 @@ suites:
     attributes:
       ma:
         install:
-          file: /tmp/test/automate-20200603114954.aib
+          file: /tmp/test/automate-20200707173044.aib
         restore:
-          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
+          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
     verifier:
       inspec_tests:
         - test/integration/restore
@@ -128,9 +132,9 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         restore:
-          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
+          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
         upgrade:
-          file: chef-automate.aib
+          file: /tmp/test/automate-20200707173044.aib
     verifier:
       inspec_tests:
         - test/integration/default
@@ -151,7 +155,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         restore:
-          url: file://localhost/tmp/test/automate-backup-20191107102742.tgz
+          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
         upgrade:
           file: chef-automate.aib
       attributes:
