@@ -2,7 +2,6 @@
 
 # Inspec test for recipe managed_automate::upgrade
 control 'upgrade tests' do
-
   # fs.file-max is at least 64000
   describe kernel_parameter('fs.file-max') do
     its('value') { should be >= 64000 }
@@ -100,7 +99,6 @@ control 'upgrade tests' do
   describe command('chef-automate version') do
     its('stdout') { should match /Server Build: 20200707173044/ }
   end
-
 end
 
 # minor differences in platforms

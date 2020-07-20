@@ -2,7 +2,6 @@
 
 # Inspec test for recipe managed-automate2::default without the preflight-check
 control 'nopreflight tests' do
-
   describe file '/tmp/kitchen/cache/config.toml' do
     it { should exist }
     it { should be_file }
@@ -69,12 +68,10 @@ control 'nopreflight tests' do
     its('stdout') { should match /^Expiration Date:/ }
   end
 
-
   describe command('chef-automate version') do
     its('stdout') { should match /CLI Build: 20200702224931/ }
     its('stdout') { should match /Server Build: 20200707173044/ }
   end
-
 end
 
 # minor differences in platforms

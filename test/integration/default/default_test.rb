@@ -2,7 +2,6 @@
 
 # Inspec test for recipe managed_automate::default
 control 'default tests' do
-
   # fs.file-max is at least 64000
   describe kernel_parameter('fs.file-max') do
     its('value') { should be >= 64000 }
@@ -101,7 +100,6 @@ control 'default tests' do
     its('stdout') { should match /CLI Build: 20200702224931/ }
     its('stdout') { should match /Server Build: 20200707173044/ }
   end
-
 end
 
 # minor differences in platforms
