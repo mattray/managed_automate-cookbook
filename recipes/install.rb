@@ -3,6 +3,15 @@
 # Recipe:: install
 #
 
+# sysctl values that need to be set in addition. References /etc/sysctl.conf file
+template '/etc/sysctl.d/ipv6.conf' do
+  source 'ipv6.conf.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
 # PREFLIGHT-CHECK
 include_recipe 'managed_automate::_preflight_check'
 
