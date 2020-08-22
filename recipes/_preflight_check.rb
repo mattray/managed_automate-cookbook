@@ -81,6 +81,23 @@ else
     not_if { (vm_dirty_expire_centisecs > 10000) && (vm_dirty_expire_centisecs < 30000) }
     ignore_failure true
   end
+
+  # sysctl values that need to be set in addition. References /etc/sysctl.conf file
+  sysctl 'net.ipv6.conf.all.accept_ra' do
+    value 0
+  end
+  
+  sysctl 'net.ipv6.conf.default.accept_ra' do
+    value 0
+  end
+  
+  sysctl 'net.ipv6.conf.all.accept_redirects' do
+    value 0
+  end
+  
+  sysctl 'net.ipv6.conf.default.accept_redirects' do
+    value 0
+  end
 end
 
 # Verify the installation is ready to run Automate 2
