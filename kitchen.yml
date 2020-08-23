@@ -71,7 +71,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         upgrade:
-          url: file://localhost/tmp/test/automate-20200707173044.aib
+          url: file://localhost/tmp/test/automate-20200811175306.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
@@ -83,7 +83,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         upgrade:
-          url: file://localhost/tmp/test/automate-20200707173044.aib
+          url: file://localhost/tmp/test/automate-20200811175306.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
@@ -102,7 +102,7 @@ suites:
     attributes:
       ma:
         install:
-          file: /tmp/test/automate-20200707173044.aib
+          file: /tmp/test/automate-20200811175306
         restore:
           url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
     verifier:
@@ -114,7 +114,7 @@ suites:
     attributes:
       ma:
         install:
-          file: /tmp/test/automate-20200707173044.aib
+          file: /tmp/test/automate-20200811175306
         restore:
           url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
     verifier:
@@ -134,7 +134,7 @@ suites:
         restore:
           url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
         upgrade:
-          file: /tmp/test/automate-20200707173044.aib
+          file: /tmp/test/automate-20200811175306
     verifier:
       inspec_tests:
         - test/integration/default

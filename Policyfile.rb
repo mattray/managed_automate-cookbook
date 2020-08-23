@@ -13,7 +13,7 @@ named_run_list :everything, 'managed_automate::airgap_bundle', 'managed_automate
 
 # default
 override['ma']['chef-automate'] = '/tmp/test/chef-automate'
-override['ma']['install']['file'] = '/tmp/test/automate-20200707173044.aib'
+override['ma']['install']['file'] = '/tmp/test/automate-20200811175306.aib'
 override['ma']['license']['url'] = 'file://localhost/tmp/test/a2.lic'
 
 # airgap
