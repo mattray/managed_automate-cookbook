@@ -97,8 +97,8 @@ control 'default tests' do
   end
 
   describe command('chef-automate version') do
-    its('stdout') { should match /CLI Build: 20200702224931/ }
-    its('stdout') { should match /Server Build: 20200707173044/ }
+    its('stdout') { should match /CLI Build: / }
+    its('stdout') { should match /Server Build: / }
   end
 end
 
