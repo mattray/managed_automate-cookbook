@@ -81,6 +81,10 @@ This file is used to list changes made in each version of the managed-automate2 
 - add testing with Ubuntu 18.04
 - add a wait for `chef-automate start` in the `automate_install_install` and `automate_install_upgrade` custom resources
 
+# 0.12.3
+- add additional sysctl settings (https://github.com/mattray/managed_automate-cookbook/pull/26)
+- refactor tests
+
 # BACKLOG
 - Chef 16: clean up end.run_action https://docs.chef.io/release_notes/#compile_time-on-all-resources
 - Chef 16: improve property require behavior https://docs.chef.io/release_notes/#improved-property-require-behavior
