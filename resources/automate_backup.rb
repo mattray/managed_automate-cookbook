@@ -35,7 +35,7 @@ path = \"#{backup_directory}\""
 
   command = "#!/bin/sh
 cd #{backup_directory}
-/usr/bin/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1
+/bin/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1
 "
 
   # Configure external backup storage
