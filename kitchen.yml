@@ -104,7 +104,7 @@ suites:
         install:
           file: /tmp/test/automate-20200811175306
         restore:
-          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
+          url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
     verifier:
       inspec_tests:
         - test/integration/restore
@@ -116,7 +116,7 @@ suites:
         install:
           file: /tmp/test/automate-20200811175306
         restore:
-          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
+          url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
     verifier:
       inspec_tests:
         - test/integration/restore
@@ -132,7 +132,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         restore:
-          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
+          url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
         upgrade:
           file: /tmp/test/automate-20200811175306
     verifier:
@@ -155,7 +155,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         restore:
-          url: file://localhost/tmp/test/automate-backup-20200716173001.tgz
+          url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
         upgrade:
           file: chef-automate.aib
       attributes:
