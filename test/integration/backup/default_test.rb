@@ -34,3 +34,9 @@ describe crontab.commands('/var/opt/chef-automate/backups/automate-backup.sh') d
   its('months') { should cmp '*' }
   its('weekdays') { should cmp '*' }
 end
+
+describe command('chef-automate config show') do
+  its('stdout') { should match /\[global\.v1\.backups\]$/ }
+  its('stdout') { should match /\[global\.v1\.backups\.filesystem\]$/ }
+  its('stdout') { should match /path = \"\/var\/opt\/chef-automate\/backups\"$/ }
+end
