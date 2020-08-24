@@ -91,10 +91,27 @@ describe command('chef-automate config show') do
 end
 
 describe command('chef-automate version') do
-  its('stdout') { should match /^CLI Build: 20200811175306$/ }
-  its('stdout') { should match /^Server Build: 20200811175306$/ }
+  its('stdout') { should match /CLI Build: 20200811173153/ }
+  its('stdout') { should match /Server Build: 20200811175306/ }
 end
 
-describe command('curl --insecure -H "api-token: bDXBofwGPcQmeNQ4EUwbZWeUpaE=" https://localhost/api/v0/compliance/reporting/export -d \'{"type":"csv"}\'') do
-  its('stdout') { should match /^127.0.0.1,2019-11-07T05:34:49Z,centos,7.7.1908,unknown,127.0.0.1,,linux-patch-baseline,DevSec Linux Patch Benchmark,0.4.0,Verifies that all patches have been applied,patches,All operating system package updates are installed,0.30,failed/ }
+# Event Feed
+describe command('curl --insecure -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/eventfeed?page_size=100') do
+  its('stdout') { should match /\"entity_name\":\"cis-centos7-level1-server version 2.2.0-15\",\"requestor_type\":\"User\",\"requestor_name\":\"admin\",\"service_hostname\":\"Not Applicable\"/ }
+end
+
+# Service Groups
+describe command('curl --insecure -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/applications/service-groups') do
+  its('stdout') { should match /\"application\":\"effortless\",\"environment\":\"home-lab\",\"package\":\"mattray\/effortless-config-base\"/ }
+end
+
+# All nodes are missing since the backup is old
+describe command('curl --insecure -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/cfgmgmt/nodes?filter=status:missing') do
+  its('stdout') { should match /\"source_fqdn\":\"ndnd.bottlebru.sh\",\"status\":\"missing\",\"timezone\":\"AEST\",\"uptime_seconds\"/ }
+end
+
+# Configuration
+describe command('curl --insecure -s -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/cfgmgmt/nodes?sorting.field=name') do
+  its('stdout') { should match /\"domain\":\"bottlebru.sh\",\"environment\":\"ndnd-home\",\"fqdn\":\"banjo.bottlebru.sh\"/ }
+  its('stdout') { should match /\"dmi_system_manufacturer\":\"Shuttle Inc.\",\"dmi_system_serial_number\":\"To Be Filled By O.E.M.\",\"domain\":\"bottlebru.sh\",\"environment\":\"local\",\"fqdn\":\"crushinator.bottlebru.sh\",\"has_runs_data\":true,\"hostname\":\"crushinator\"/ }
 end
