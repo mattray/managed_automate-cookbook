@@ -19,6 +19,8 @@ provisioner:
 verifier:
   name: inspec
   color: false
+  inputs:
+    version: 20200816214709
 
 platforms:
   - name: centos-7
@@ -71,7 +73,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         upgrade:
-          url: file://localhost/tmp/test/automate-20200811175306.aib
+          url: file://localhost/tmp/test/automate-20200816214709.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
@@ -83,7 +85,7 @@ suites:
         install:
           file: /tmp/test/automate-20200603114954.aib
         upgrade:
-          url: file://localhost/tmp/test/automate-20200811175306.aib
+          url: file://localhost/tmp/test/automate-20200816214709.aib
     verifier:
       inspec_tests:
         - test/integration/upgrade
@@ -102,7 +104,7 @@ suites:
     attributes:
       ma:
         install:
-          file: /tmp/test/automate-20200811175306
+          file: /tmp/test/automate-20200816214709.aib
         restore:
           url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
     verifier:
@@ -114,7 +116,7 @@ suites:
     attributes:
       ma:
         install:
-          file: /tmp/test/automate-20200811175306
+          file: /tmp/test/automate-20200816214709.aib
         restore:
           url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
     verifier:
@@ -134,7 +136,7 @@ suites:
         restore:
           url: file://localhost/tmp/test/automate-backup-20200822173001.tgz
         upgrade:
-          file: /tmp/test/automate-20200811175306
+          file: /tmp/test/automate-20200816214709.aib
     verifier:
       inspec_tests:
         - test/integration/default

@@ -1,4 +1,4 @@
-# # encoding: utf-8
+input('version')
 
 # Inspec test for recipe managed_automate::upgrade
 control 'upgrade tests' do
@@ -48,12 +48,6 @@ control 'upgrade tests' do
     its('value') { should be 1 }
   end
 
-  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
-    it { should exist }
-    it { should be_file }
-    #  its('content') { should match(/heapsize = "2902m"/) }
-  end
-
   describe command('chef-automate') do
     it { should exist }
   end
@@ -78,7 +72,9 @@ control 'upgrade tests' do
     its('stdout') { should match /^deployment-service      running        ok/ }
     its('stdout') { should match /^es-sidecar-service      running        ok/ }
     its('stdout') { should match /^event-feed-service      running        ok/ }
+    its('stdout') { should match /^event-gateway           running        ok/ }
     its('stdout') { should match /^event-service           running        ok/ }
+    its('stdout') { should match /^infra-proxy-service     running        ok/ }
     its('stdout') { should match /^ingest-service          running        ok/ }
     its('stdout') { should match /^license-control-service running        ok/ }
     its('stdout') { should match /^local-user-service      running        ok/ }
@@ -97,13 +93,18 @@ control 'upgrade tests' do
   end
 
   describe command('chef-automate version') do
-    its('stdout') { should match /Server Build: 20200811175306/ }
+    its('stdout') { should include input('version').to_s }
   end
 end
 
 # minor differences in platforms
 control 'centos tests' do
   only_if { os.redhat? }
+  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/heapsize = "2902m"/) }
+  end
+
   describe command('chef-automate config show') do
     its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
     its('stdout') { should match /deployment_type = \"local\"$/ }
@@ -113,6 +114,11 @@ end
 
 control 'ubuntu tests' do
   only_if { os.debian? }
+  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/heapsize = "2980m"/) }
+  end
+
   describe command('chef-automate config show') do
     its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
     its('stdout') { should match /deployment_type = \"local\"$/ }

@@ -10,7 +10,7 @@ supports 'redhat'
 supports 'centos'
 supports 'debian'
 
-depends 'toml', '~> 0.3'
+depends 'toml', '~> 0.3.1'
 
 source_url 'https://github.com/mattray/managed-automate2-cookbook'
 issues_url 'https://github.com/mattray/managed-automate2-cookbook/issues'

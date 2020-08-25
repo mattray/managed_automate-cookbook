@@ -102,17 +102,36 @@ action :restore do
   end.run_action(:run) # appears to remove filesystem race conditions
 
   execute 'chef-automate backup fix-repo-permissions' do
-    cwd restore_dir
     command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
   end
 
   json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
   backup_id = json['result']['backup_id']
 
+  # assign heap size to 50% of available memory
+  total_mem = node['memory']['total'][0..-3].to_i
+  half_mem_megabytes = (total_mem / 1024) / 2
+
+  # Do not make your heap size > 32 GB.
+  # https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#compressed_oops
+  # "If you want to play it safe, setting the heap to 31gb is likely safe."
+  half_mem_megabytes = 32600 if half_mem_megabytes > 32600
+
+  config = {
+    'global.v1': { 'fqdn': node['fqdn'] },
+    'elasticsearch.v1.sys.runtime': { 'heapsize': "#{half_mem_megabytes}m" }
+  }
+
+  restore_patch = restore_dir + '/restore.toml'
+
+  toml_file restore_patch  do
+    content config
+  end
+
   execute 'chef-automate backup restore' do
     cwd restore_dir
     timeout 7200 # there appears to be a 2 hour timed out with large restores
-    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id}"
+    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id} --patch-config #{restore_patch}"
   end
 
   start_automate(chef_automate, 'RESTORE:RESTORING')

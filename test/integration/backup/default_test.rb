@@ -1,7 +1,3 @@
-# # encoding: utf-8
-
-# Inspec test for recipe managed_automate::backup
-
 # internal backup dir
 describe directory('/var/opt/chef-automate/backups') do
   it { should exist }
@@ -13,8 +9,6 @@ describe directory('/tmp/test/backups') do
 end
 
 describe file('/var/opt/chef-automate/backups/automate-backup.sh') do
-  it { should exist }
-  it { should be_executable }
   its('content') { should match(%r{^#!/bin/sh$}) }
   its('content') { should match(%r{^cd /var/opt/chef-automate/backups$}) }
   its('content') { should match(%r{^/bin/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1$}) }

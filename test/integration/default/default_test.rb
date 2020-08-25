@@ -1,6 +1,5 @@
-# # encoding: utf-8
+input('version')
 
-# Inspec test for recipe managed_automate::default
 control 'default tests' do
   # fs.file-max is at least 64000
   describe kernel_parameter('fs.file-max') do
@@ -31,14 +30,10 @@ control 'default tests' do
   end
 
   describe file '/tmp/kitchen/cache/config.toml' do
-    it { should exist }
-    it { should be_file }
     its('content') { should match(/upgrade_strategy = "none"/) }
   end
 
   describe file '/tmp/kitchen/cache/automate-credentials.toml' do
-    it { should exist }
-    it { should be_file }
     its('content') { should match(/username = "admin"/) }
   end
 
@@ -46,11 +41,6 @@ control 'default tests' do
   # vm.swappiness should be 1
   describe kernel_parameter('vm.swappiness') do
     its('value') { should be 1 }
-  end
-
-  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
-    it { should exist }
-    it { should be_file }
   end
 
   describe command('chef-automate') do
@@ -77,7 +67,9 @@ control 'default tests' do
     its('stdout') { should match /^deployment-service      running        ok/ }
     its('stdout') { should match /^es-sidecar-service      running        ok/ }
     its('stdout') { should match /^event-feed-service      running        ok/ }
+    its('stdout') { should match /^event-gateway           running        ok/ }
     its('stdout') { should match /^event-service           running        ok/ }
+    its('stdout') { should match /^infra-proxy-service     running        ok/ }
     its('stdout') { should match /^ingest-service          running        ok/ }
     its('stdout') { should match /^license-control-service running        ok/ }
     its('stdout') { should match /^local-user-service      running        ok/ }
@@ -96,14 +88,18 @@ control 'default tests' do
   end
 
   describe command('chef-automate version') do
-    its('stdout') { should match /CLI Build: / }
-    its('stdout') { should match /Server Build: / }
+    its('stdout') { should include input('version').to_s }
   end
 end
 
 # minor differences in platforms
 control 'centos tests' do
   only_if { os.redhat? }
+  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/heapsize = "2902m"/) }
+  end
+
   describe command('chef-automate config show') do
     its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
     its('stdout') { should match /deployment_type = \"local\"$/ }
@@ -113,6 +109,11 @@ end
 
 control 'ubuntu tests' do
   only_if { os.debian? }
+  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/heapsize = "2980m"/) }
+  end
+
   describe command('chef-automate config show') do
     its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
     its('stdout') { should match /deployment_type = \"local\"$/ }
