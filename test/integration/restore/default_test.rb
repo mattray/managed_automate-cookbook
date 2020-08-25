@@ -1,6 +1,4 @@
-# # encoding: utf-8
-
-# Inspec test for recipe managed-automate2::default
+input('version')
 
 # fs.file-max is at least 64000
 describe kernel_parameter('fs.file-max') do
@@ -36,10 +34,49 @@ describe kernel_parameter('vm.swappiness') do
   its('value') { should be 1 }
 end
 
-describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
-  it { should exist }
-  it { should be_file }
-  #  its('content') { should match(/heapsize = "2902m"/) }
+# minor differences in platforms
+control 'centos tests' do
+  only_if { os.redhat? }
+
+  describe file '/var/opt/chef-automate/backups/restore.toml' do
+    its('content') { should match(/^\[global\.v1\]$/) }
+    its('content') { should match(/^fqdn = \"/) }
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/^heapsize = \"2902m\"$/) }
+  end
+
+  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/heapsize = "2902m"/) }
+  end
+
+  describe command('chef-automate config show') do
+    its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
+    its('stdout') { should match /deployment_type = \"local\"$/ }
+    its('stdout') { should match /heapsize = \"2902m\"$/ }
+  end
+end
+
+control 'ubuntu tests' do
+  only_if { os.debian? }
+
+  describe file '/var/opt/chef-automate/backups/restore.toml' do
+    its('content') { should match(/^\[global\.v1\]$/) }
+    its('content') { should match(/^fqdn = \"/) }
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/^heapsize = \"2980m\"$/) }
+  end
+
+  describe file '/tmp/kitchen/cache/elasticsearch_config.toml' do
+    its('content') { should match(/^\[elasticsearch\.v1\.sys\.runtime\]$/) }
+    its('content') { should match(/heapsize = "2980m"/) }
+  end
+
+  describe command('chef-automate config show') do
+    its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
+    its('stdout') { should match /deployment_type = \"local\"$/ }
+    its('stdout') { should match /heapsize = \"2980m\"$/ }
+  end
 end
 
 describe command('chef-automate') do
@@ -66,7 +103,9 @@ describe command('chef-automate status') do
   its('stdout') { should match /^deployment-service      running        ok/ }
   its('stdout') { should match /^es-sidecar-service      running        ok/ }
   its('stdout') { should match /^event-feed-service      running        ok/ }
+  its('stdout') { should match /^event-gateway           running        ok/ }
   its('stdout') { should match /^event-service           running        ok/ }
+  its('stdout') { should match /^infra-proxy-service     running        ok/ }
   its('stdout') { should match /^ingest-service          running        ok/ }
   its('stdout') { should match /^license-control-service running        ok/ }
   its('stdout') { should match /^local-user-service      running        ok/ }
@@ -84,17 +123,27 @@ describe command('chef-automate license status') do
   its('stdout') { should match /^Expiration Date:/ }
 end
 
-describe command('chef-automate config show') do
-  its('stdout') { should match /cert = \"-----BEGIN CERTIFICATE-----/ }
-  its('stdout') { should match /deployment_type = \"local\"$/ }
-  its('stdout') { should match /heapsize = \"2902m\"$/ }
-end
-
 describe command('chef-automate version') do
-  its('stdout') { should match /^CLI Build: 20191024134947$/ }
-  its('stdout') { should match /^Server Build: 20191024135531$/ }
+  its('stdout') { should include input('version').to_s }
 end
 
-describe command('curl --insecure -H "api-token: bDXBofwGPcQmeNQ4EUwbZWeUpaE=" https://localhost/api/v0/compliance/reporting/export -d \'{"type":"csv"}\'') do
-  its('stdout') { should match /^127.0.0.1,2019-11-07T05:34:49Z,centos,7.7.1908,unknown,127.0.0.1,,linux-patch-baseline,DevSec Linux Patch Benchmark,0.4.0,Verifies that all patches have been applied,patches,All operating system package updates are installed,0.30,failed/ }
+# Event Feed
+describe command('curl --insecure -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/eventfeed?page_size=100') do
+  its('stdout') { should match /\"entity_name\":\"cis-centos7-level1-server version 2.2.0-15\",\"requestor_type\":\"User\",\"requestor_name\":\"admin\",\"service_hostname\":\"Not Applicable\"/ }
+end
+
+# Service Groups
+describe command('curl --insecure -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/applications/service-groups') do
+  its('stdout') { should match %r{\"application\":\"effortless\",\"environment\":\"home-lab\",\"package\":\"mattray/effortless-config-base\"} }
+end
+
+# All nodes are missing since the backup is old
+describe command('curl --insecure -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/cfgmgmt/nodes?filter=status:missing') do
+  its('stdout') { should match /\"source_fqdn\":\"ndnd.bottlebru.sh\",\"status\":\"missing\",\"timezone\":\"AEST\",\"uptime_seconds\"/ }
+end
+
+# Configuration
+describe command('curl --insecure -s -H "api-token: sYKAqcY2H30ns7RTq7jCHNQ5vKs=" https://localhost/api/v0/cfgmgmt/nodes?sorting.field=name') do
+  its('stdout') { should match /\"domain\":\"bottlebru.sh\",\"environment\":\"ndnd-home\",\"fqdn\":\"banjo.bottlebru.sh\"/ }
+  its('stdout') { should match /\"dmi_system_manufacturer\":\"Shuttle Inc.\",\"dmi_system_serial_number\":\"To Be Filled By O.E.M.\",\"domain\":\"bottlebru.sh\",\"environment\":\"local\",\"fqdn\":\"crushinator.bottlebru.sh\",\"has_runs_data\":true,\"hostname\":\"crushinator\"/ }
 end

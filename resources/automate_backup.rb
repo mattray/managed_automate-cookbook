@@ -21,21 +21,22 @@ action :schedule do
   # Configure A2 internal backups
   backupconfig = fcp + '/backup_config.toml'
 
-  file backupconfig do
-    content "[global.v1.backups.filesystem]
-path = \"#{backup_directory}\""
+  config = { 'global.v1.backups.filesystem': { 'path': backup_directory } }
+
+  toml_file backupconfig do
+    content config
   end
 
   directory backup_directory
 
   execute "chef-automate config patch #{backupconfig}" do
     action :nothing
-    subscribes :run, "file[#{backupconfig}]"
+    subscribes :run, "toml_file[#{backupconfig}]"
   end
 
   command = "#!/bin/sh
 cd #{backup_directory}
-/usr/bin/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1
+/bin/chef-automate backup create --result-json backup-result.json >> backup.log 2>&1
 "
 
   # Configure external backup storage

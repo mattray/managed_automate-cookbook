@@ -22,12 +22,13 @@ half_mem_megabytes = (total_mem / 1024) / 2
 # "If you want to play it safe, setting the heap to 31gb is likely safe."
 half_mem_megabytes = 32600 if half_mem_megabytes > 32600
 
-template elasticsearchconfig do
-  source 'elasticsearch_config.toml.erb'
-  variables(heapsize: half_mem_megabytes)
+config = { 'elasticsearch.v1.sys.runtime': { 'heapsize': "#{half_mem_megabytes}m" } }
+
+toml_file elasticsearchconfig do
+  content config
 end
 
 execute "chef-automate config patch #{elasticsearchconfig}" do
   action :nothing
-  subscribes :run, "template[#{elasticsearchconfig}]", :immediately
+  subscribes :run, "toml_file[#{elasticsearchconfig}]", :immediately
 end

@@ -81,13 +81,18 @@ This file is used to list changes made in each version of the managed-automate2 
 - add testing with Ubuntu 18.04
 - add a wait for `chef-automate start` in the `automate_install_install` and `automate_install_upgrade` custom resources
 
+# 0.12.3
+- add additional sysctl settings (https://github.com/mattray/managed_automate-cookbook/pull/26)
+
+# 0.13.0
+- refactor tests, including updated API calls to test validity of restore
+- Backups refer to /bin/chef-automate (https://github.com/mattray/managed_automate-cookbook/issues/22)
+- added toml cookbook, replacing usage of templatized toml files
+- TOML patch for restores to handle changed FQDN and Elasticsearch heap size (https://github.com/mattray/managed_automate-cookbook/issues/23)
+
 # BACKLOG
 - Chef 16: clean up end.run_action https://docs.chef.io/release_notes/#compile_time-on-all-resources
 - Chef 16: improve property require behavior https://docs.chef.io/release_notes/#improved-property-require-behavior
-- FQDN reset on restore
-+    node['ma']['restore']['fqdn] = 'newhost.example.com
-+    node['ma']['restore']['password-reset'] = true
-+ If the restore server is a different host, you may update the FQDN and reset the password if necessary. The AIB and restore files may be URLs or files, similar to this:
 - replace attributes with inputs for InSpec 4 tests (ChefDK 4)
 - download Automate by version
 here are all the versions: https://packages.chef.io/manifests/current/automate/versions.json

@@ -44,6 +44,10 @@ default['ma']['sysctl']['vm.dirty_ratio'] = 15
 default['ma']['sysctl']['vm.dirty_background_ratio'] = 35
 default['ma']['sysctl']['vm.dirty_expire_centisecs'] = 20000
 default['ma']['sysctl']['vm.swappiness'] = 1
+default['ma']['sysctl']['net.ipv6.conf.all.accept_ra'] = 0
+default['ma']['sysctl']['net.ipv6.conf.default.accept_ra'] = 0
+default['ma']['sysctl']['net.ipv6.conf.all.accept_redirects'] = 0
+default['ma']['sysctl']['net.ipv6.conf.default.accept_redirects'] = 0
 
 # backup recipe
 # schedule via cron
