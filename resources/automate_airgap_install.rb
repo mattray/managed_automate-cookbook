@@ -5,6 +5,7 @@ property :install_file, String
 property :install_url, String
 property :restore_file, String
 property :restore_url, String
+property :restore_id, String, description: 'ID of the backup which should be restored from an existing location on the filesystem.'
 property :chef_automate, String, required: true
 
 action :install do
@@ -55,7 +56,14 @@ action :restore do
   install_url = new_resource.install_url
   restore_file = new_resource.restore_file
   restore_url = new_resource.restore_url
+  restore_id = new_resource.restore_id
   fcp = Chef::Config[:file_cache_path]
+
+  # Has a restore location been passed?
+  if restore_file.nil? && restore_url.nil? && restore_id.nil?
+    log 'No restore location has been chosen.  Value of restore_file, restore_url or restore_id must be passed.'
+    return
+  end
 
   # is Automate already installed?
   if ::File.exist?('/bin/chef-automate')
@@ -71,42 +79,66 @@ action :restore do
     action :nothing
   end.run_action(:create) # appears to remove filesystem race conditions
 
-  # if the install file is not there download it
-  if restore_url && restore_file.nil?
-    restore_file = fcp + '/chef-automate-restore.tgz'
-    remote_file restore_file do
-      source restore_url
+  # If a restore_id was passed attempt to use it.
+  if restore_id
+    # Attempt to locate the restore_id in the restore_dir else check to see if a full path was passed and found.
+    #   Set the restore_path which will be used in the restore command with the result
+    restore_path = if ::File.exist?("#{restore_dir}/#{restore_id}")
+                     "#{restore_dir}/#{restore_id}"
+                   elsif ::File.exist?(restore_id)
+                     restore_id
+                   else
+                     'could-not-find-restore_id-which-was-passed'
+                   end
+  else
+    # If a restore_id was not passed
+    # if the install file is not there download it
+    if restore_url && restore_file.nil?
+      restore_file = fcp + '/chef-automate-restore.tgz'
+      remote_file restore_file do
+        source restore_url
+        action :nothing
+      end.run_action(:create) # appears to remove filesystem race conditions
+    end
+
+    # if the install file is not there download it
+    if install_url && install_file.nil?
+      install_file = fcp + '/chef-automate.aib'
+      remote_file install_file do
+        source install_url
+        action :nothing
+      end.run_action(:create) # appears to remove filesystem race conditions
+    end
+
+    unless ::File.exist?(install_file) && ::File.exist?(restore_file)
+      log "INSTALLATION FILE #{install_file} OR RESTORE FILE #{restore_file} NOT FOUND, RESTORE SKIPPED"
+      return
+    end
+
+    # untar the backup
+    execute 'untar restore file' do
+      cwd restore_dir
+      command "tar -C #{restore_dir} -xzf #{restore_file}"
       action :nothing
-    end.run_action(:create) # appears to remove filesystem race conditions
+    end.run_action(:run) # appears to remove filesystem race conditions
+
+    # Parse the backup_id from results JSON file.
+    json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
+    backup_id = json['result']['backup_id']
+
+    # Set the restore_path which will be used in the restore command
+    restore_path = "#{restore_dir}/#{backup_id}"
   end
 
-  # if the install file is not there download it
-  if install_url && install_file.nil?
-    install_file = fcp + '/chef-automate.aib'
-    remote_file install_file do
-      source install_url
-      action :nothing
-    end.run_action(:create) # appears to remove filesystem race conditions
-  end
-
-  unless ::File.exist?(install_file) && ::File.exist?(restore_file)
-    log "INSTALLATION FILE #{install_file} OR RESTORE FILE #{restore_file} NOT FOUND, RESTORE SKIPPED"
+  # Test to make sure that the restore_path which was set is reachable
+  unless ::File.exist(restore_path)
+    log "Could not find a restore located at the path provided: #{restore_path}"
     return
   end
-
-  # untar the backup
-  execute 'untar restore file' do
-    cwd restore_dir
-    command "tar -C #{restore_dir} -xzf #{restore_file}"
-    action :nothing
-  end.run_action(:run) # appears to remove filesystem race conditions
 
   execute 'chef-automate backup fix-repo-permissions' do
     command "#{chef_automate} backup fix-repo-permissions #{restore_dir}"
   end
-
-  json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
-  backup_id = json['result']['backup_id']
 
   # assign heap size to 50% of available memory
   total_mem = node['memory']['total'][0..-3].to_i
@@ -119,19 +151,19 @@ action :restore do
 
   config = {
     'global.v1': { 'fqdn': node['fqdn'] },
-    'elasticsearch.v1.sys.runtime': { 'heapsize': "#{half_mem_megabytes}m" }
+    'elasticsearch.v1.sys.runtime': { 'heapsize': "#{half_mem_megabytes}m" },
   }
 
   restore_patch = restore_dir + '/restore.toml'
 
-  toml_file restore_patch  do
+  toml_file restore_patch do
     content config
   end
 
   execute 'chef-automate backup restore' do
     cwd restore_dir
     timeout 7200 # there appears to be a 2 hour timed out with large restores
-    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_dir}/#{backup_id} --patch-config #{restore_patch}"
+    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_path} --patch-config #{restore_patch}"
   end
 
   start_automate(chef_automate, 'RESTORE:RESTORING')

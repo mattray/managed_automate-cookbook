@@ -12,18 +12,34 @@ Calls the install recipe.
 
 Installs Chef Automate on a single air-gapped box in a new deployment. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The AIB file may be a URL or file, similar to this:
 
-    node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
+```ruby
+node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
+```
 
 The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute. If you wish to skip the preflight-check but still attempt to configure the machine with the recommended settings (and ignore failures), set
 
-    node['ma']['preflight-check'] = false
+```ruby
+node['ma']['preflight-check'] = false
+```
 
 ## restore ##
 
 Restores Chef Automate on a single air-gapped box in a new deployment from a previous backup. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The AIB and restore files may be URLs or files, similar to this:
 
-    node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
-    node['ma']['restore']['file'] = '/tmp/test/automate-backup-20190902064704.tgz'
+```ruby
+node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
+node['ma']['restore']['file'] = '/tmp/test/automate-backup-20190902064704.tgz'
+```
+
+Additionally, if the backup directory exists and is mounted on the system, the `restore_id` property may be passed (defaults to `node['ma']['restore']['id']`) pointing to the location of the backup which should be restored.
+
+```ruby
+# Look for the directory/id 20210203171301 under the the node['ma']['backup']['dir'] location
+node['ma']['restore']['id'] = '20210203171301'
+
+# Pass a full path to the location where the backup is stored
+node['ma']['restore']['id'] = '/some/mounted/location/20210203171301'
+```
 
 The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.
 
@@ -31,7 +47,9 @@ The server will be tuned for passing Automate's `preflight-check` and swap will 
 
 Upgrades Chef Automate on a single air-gapped box from an existing deployment. Download the `chef-automate` command before using this recipe (the `airgap_bundle` recipe does this) and copy it to the `node['ma'][chef-automate]` location. The upgrade file may be a URL or file, similar to this:
 
-    node['ma']['upgrade']['url'] = 'file://localhost/tmp/test/automate-20190820163418.aib'
+```ruby
+node['ma']['upgrade']['url'] = 'file://localhost/tmp/test/automate-20190820163418.aib'
+```
 
 The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.
 
@@ -43,9 +61,11 @@ This recipe requires internet access and is used to download the `chef-automate`
 
 Runs `chef-automate backup` via cron and copies tarballs of the backups to a destination directory. The default is 2:30am daily, but you may change the cron schedule via the following attributes. The `automate-credentials.toml` from the initial install or restored backup is included in the backup if available.
 
-    node['ma']['backup']['cron']['minute'] = '30'
-    node['ma']['backup']['cron']['hour'] = '2'
-    node['ma']['backup']['cron']['day'] = '*'
+```ruby
+node['ma']['backup']['cron']['minute'] = '30'
+node['ma']['backup']['cron']['hour'] = '2'
+node['ma']['backup']['cron']['day'] = '*'
+```
 
 # Testing with Test Kitchen
 
@@ -70,5 +90,6 @@ The [kitchen.yml](kitchen.yml) sets the VM to have the private IP `192.168.33.33
 
 You will probably need to update the license, directories and AIB files used for your testing. To use a license key, store it in your `policyfiles/default.rb` similar to this:
 
+```ruby
+override['ma']['license']['string'] = 'thisisnotareallicence_dHlwZSI6ImNvbW1lcmNpYWwiLCJnZW5lcmF0b3IiOiJjaGVmL2xpY2Vuc2UtMi4wLjAiLCJrZXlfc2hhMjU2IjoiZTBkZjI4YzhiYzY4MTUwZWRiZmVmOThjZDZiN2RjNDM5YzFmODBjN2U3ZWY3NDc4OTNhNjg5M2EyZjdiNjBmNyIsImdlbmVyYXRpb25fZGF0ZSI6eyJzZWNvbmRzIjoxNTM0MzQ0MjkwfSwiY3VzdG9tZXIiOiJXZXN0cGFjQVUgLSBBdXRvbWF0ZSAtIE5ldyAtIDMwMDAgTm9kZXMiLCJjdXN0b21lcl9pZCI6Ijg4OEU4NUU3LTY2MUEtNEZGQS04MjlFLTNCRTIyREQyNEU4RCIsImN1c3RvbWVyX2lkX3ZlcnNpb24iOiIxIiwiZW50aXRsZW1lbnRzIjpbeyJuYW1lIjoiQ2hlZiBBdXRvbWF0ZSIsIm1lYXN1cmUiOiJub2RlcyIsInN0YXJ0Ijp7InNlY29uZHMiOjE1MzQyOTEyMDB9LCJlbmQiOnsic2Vjb25kcyI6MTU2NDYxNzU5OX19XX0.AMNR0uiRQgLsfi-W4dBQ5K6EH1HUSK_AFPSIXzzkEn1gAiLjgGwfB3L7oxxrihgV8w8U8Vsxeal_CGg5GI99le3FAYYt5wdCG-8VZNScVcyL8xCIdPUyl0ZV-NLjyhLzf5JKrl9E1dTBzMrh__OsNx34TgRLZ-xNKNekUAy9sVdyHryf'
 ```
-override['ma']['license']['string'] = 'thisisnotareallicence_dHlwZSI6ImNvbW1lcmNpYWwiLCJnZW5lcmF0b3IiOiJjaGVmL2xpY2Vuc2UtMi4wLjAiLCJrZXlfc2hhMjU2IjoiZTBkZjI4YzhiYzY4MTUwZWRiZmVmOThjZDZiN2RjNDM5YzFmODBjN2U3ZWY3NDc4OTNhNjg5M2EyZjdiNjBmNyIsImdlbmVyYXRpb25fZGF0ZSI6eyJzZWNvbmRzIjoxNTM0MzQ0MjkwfSwiY3VzdG9tZXIiOiJXZXN0cGFjQVUgLSBBdXRvbWF0ZSAtIE5ldyAtIDMwMDAgTm9kZXMiLCJjdXN0b21lcl9pZCI6Ijg4OEU4NUU3LTY2MUEtNEZGQS04MjlFLTNCRTIyREQyNEU4RCIsImN1c3RvbWVyX2lkX3ZlcnNpb24iOiIxIiwiZW50aXRsZW1lbnRzIjpbeyJuYW1lIjoiQ2hlZiBBdXRvbWF0ZSIsIm1lYXN1cmUiOiJub2RlcyIsInN0YXJ0Ijp7InNlY29uZHMiOjE1MzQyOTEyMDB9LCJlbmQiOnsic2Vjb25kcyI6MTU2NDYxNzU5OX19XX0.AMNR0uiRQgLsfi-W4dBQ5K6EH1HUSK_AFPSIXzzkEn1gAiLjgGwfB3L7oxxrihgV8w8U8Vsxeal_CGg5GI99le3FAYYt5wdCG-8VZNScVcyL8xCIdPUyl0ZV-NLjyhLzf5JKrl9E1dTBzMrh__OsNx34TgRLZ-xNKNekUAy9sVdyHryf'```
