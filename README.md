@@ -31,14 +31,14 @@ node['ma']['install']['file'] = '/tmp/test/automate-20190813170406.aib'
 node['ma']['restore']['file'] = '/tmp/test/automate-backup-20190902064704.tgz'
 ```
 
-Additionally, if the backup directory exists and is mounted on the system, the `restore_id` property may be passed (defaults to `node['ma']['restore']['id']`) pointing to the location of the backup which should be restored.
+Additionally, if the backup directory exists and is mounted on the system, the `restore_path` property may be passed (defaults to `node['ma']['restore']['id']`) pointing to the location of the backup which should be restored.
 
 ```ruby
-# Look for the directory/id 20210203171301 under the the node['ma']['backup']['dir'] location
-node['ma']['restore']['id'] = '20210203171301'
+# Look for the directory/path 20210203171301 under the the node['ma']['backup']['dir'] location
+node['ma']['restore']['path'] = '20210203171301'
 
 # Pass a full path to the location where the backup is stored
-node['ma']['restore']['id'] = '/some/mounted/location/20210203171301'
+node['ma']['restore']['path'] = '/some/mounted/location/20210203171301'
 ```
 
 The server will be tuned for passing Automate's `preflight-check` and swap will be disabled and the heapsize for Elasticsearch will be set to 1/2 total memory. The license may be referred as a file, URL, or a string in an attribute.

@@ -12,7 +12,7 @@ automate_airgap_install 'Restore Chef Automate' do
   install_url node['ma']['install']['url']
   restore_file node['ma']['restore']['file']
   restore_url node['ma']['restore']['url']
-  restore_id node['ma']['restore']['id']
+  restore_path node['ma']['restore']['path']
   chef_automate node['ma']['chef-automate']
   action :restore
 end

@@ -5,7 +5,7 @@ property :install_file, String
 property :install_url, String
 property :restore_file, String
 property :restore_url, String
-property :restore_id, String, description: 'ID of the backup which should be restored from an existing location on the filesystem.'
+property :restore_path, String, description: 'Path of the backup which should be restored from an existing location on the filesystem.'
 property :chef_automate, String, required: true
 
 action :install do
@@ -56,12 +56,12 @@ action :restore do
   install_url = new_resource.install_url
   restore_file = new_resource.restore_file
   restore_url = new_resource.restore_url
-  restore_id = new_resource.restore_id
+  restore_path = new_resource.restore_path
   fcp = Chef::Config[:file_cache_path]
 
   # Has a restore location been passed?
-  if restore_file.nil? && restore_url.nil? && restore_id.nil?
-    log 'No restore location has been chosen.  Value of restore_file, restore_url or restore_id must be passed.'
+  if restore_file.nil? && restore_url.nil? && restore_path.nil?
+    log 'No restore location has been chosen.  Value of restore_file, restore_url or restore_path must be passed.'
     return
   end
 
@@ -79,19 +79,19 @@ action :restore do
     action :nothing
   end.run_action(:create) # appears to remove filesystem race conditions
 
-  # If a restore_id was passed attempt to use it.
-  if restore_id
-    # Attempt to locate the restore_id in the restore_dir else check to see if a full path was passed and found.
-    #   Set the restore_path which will be used in the restore command with the result
-    restore_path = if ::File.exist?("#{restore_dir}/#{restore_id}")
-                     "#{restore_dir}/#{restore_id}"
-                   elsif ::File.exist?(restore_id)
-                     restore_id
-                   else
-                     'could-not-find-restore_id-which-was-passed'
-                   end
+  # If a restore_path was passed attempt to use it.
+  if restore_path
+    # Attempt to locate the restore_path in the restore_dir else check to see if a full path was passed and found.
+    #   Set the restore_location which will be used in the restore command with the result
+    restore_location = if ::File.exist?("#{restore_dir}/#{restore_path}")
+                         "#{restore_dir}/#{restore_path}"
+                       elsif ::File.exist?(restore_path)
+                         restore_path
+                       else
+                         'could-not-find-restore_path-which-was-passed'
+                       end
   else
-    # If a restore_id was not passed
+    # If a restore_path was not passed
     # if the install file is not there download it
     if restore_url && restore_file.nil?
       restore_file = fcp + '/chef-automate-restore.tgz'
@@ -126,13 +126,13 @@ action :restore do
     json = JSON.parse(::File.read(restore_dir + '/backup-result.json'))
     backup_id = json['result']['backup_id']
 
-    # Set the restore_path which will be used in the restore command
-    restore_path = "#{restore_dir}/#{backup_id}"
+    # Set the restore_location which will be used in the restore command
+    restore_location = "#{restore_dir}/#{backup_id}"
   end
 
-  # Test to make sure that the restore_path which was set is reachable
-  unless ::File.exist(restore_path)
-    log "Could not find a restore located at the path provided: #{restore_path}"
+  # Test to make sure that the restore_location which was set is reachable
+  unless ::File.exist(restore_location)
+    log "Could not find a restore located at the path provided: #{restore_location}"
     return
   end
 
@@ -163,7 +163,7 @@ action :restore do
   execute 'chef-automate backup restore' do
     cwd restore_dir
     timeout 7200 # there appears to be a 2 hour timed out with large restores
-    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_path} --patch-config #{restore_patch}"
+    command "#{chef_automate} backup restore --skip-preflight --airgap-bundle #{install_file} #{restore_location} --patch-config #{restore_patch}"
   end
 
   start_automate(chef_automate, 'RESTORE:RESTORING')
