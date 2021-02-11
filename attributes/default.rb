@@ -29,6 +29,7 @@ default['ma']['install']['file'] = nil
 default['ma']['install']['url'] = nil
 default['ma']['restore']['file'] = nil
 default['ma']['restore']['url'] = nil
+default['ma']['restore']['path'] = nil
 default['ma']['upgrade']['file'] = nil
 default['ma']['upgrade']['url'] = nil
 
